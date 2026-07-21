@@ -389,7 +389,7 @@ function MagCardRow({ card, onSaved, onRefresh, onDelete }: { card: MagazineCard
   return (
     <div className="border rounded-lg" style={{ borderColor: "rgba(0,0,0,.08)" }}>
       <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between p-4 text-right bg-transparent border-0 cursor-pointer">
-        <span className="font-bold">{c.title || "(ללא כותרת)"} <span className="text-xs opacity-60">#{c.sort_order}</span></span>
+        <span className="font-bold">{c.title || "(ללא כותרת)"}</span>
         <span style={{ color: "var(--accent-primary)" }}>{open ? "−" : "+"}</span>
       </button>
       {open && (
