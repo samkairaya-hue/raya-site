@@ -295,17 +295,27 @@ function CardsPanel({ kind, cards, onSaved, onRefresh }: {
   cards: Card[];
   onSaved: (m: string) => void; onRefresh: () => void;
 }) {
+  const [openId, setOpenId] = useState<string>("");
   return (
     <div className="flex flex-col gap-3">
       <p className="text-xs" style={{ color: "var(--text-muted)" }}>
         אם השדה "טקסט עמוד יעד" ריק – הריבוע לא יהיה לחיץ.
       </p>
       {cards.map((c) => (
-        <CardRow key={c.id} kind={kind} card={c} onSaved={onSaved} onRefresh={onRefresh} />
+        <CardRow
+          key={c.id}
+          kind={kind}
+          card={c}
+          isOpen={openId === c.id}
+          onToggle={() => setOpenId((cur) => (cur === c.id ? "" : c.id))}
+          onSaved={onSaved}
+          onRefresh={onRefresh}
+        />
       ))}
     </div>
   );
 }
+
 
 function CardRow({ kind, card, onSaved, onRefresh }: { kind: "matrix" | "outcome"; card: Card; onSaved: (m: string) => void; onRefresh: () => void }) {
   const [open, setOpen] = useState(false);
