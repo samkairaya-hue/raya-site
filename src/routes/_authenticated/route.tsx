@@ -1,23 +1,38 @@
-import { createFileRoute, Outlet, redirect, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated")({
-  ssr: false,
-  beforeLoad: async () => {
-    const { data, error } = await supabase.auth.getUser();
-    if (error || !data.user) throw redirect({ to: "/auth" });
-    return { user: data.user };
-  },
   component: Layout,
 });
 
 function Layout() {
   const nav = useNavigate();
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState<string | null>(null);
+  const [ready, setReady] = useState(false);
+
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email || ""));
-  }, []);
+    let cancelled = false;
+    supabase.auth.getUser().then(({ data }) => {
+      if (cancelled) return;
+      if (!data.user) {
+        nav({ to: "/auth" });
+        return;
+      }
+      setEmail(data.user.email || "");
+      setReady(true);
+    });
+    return () => { cancelled = true; };
+  }, [nav]);
+
+  if (!ready) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "#F8F9FA" }}>
+        <div className="text-sm" style={{ color: "var(--text-muted)" }}>טוען…</div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen" style={{ background: "#F8F9FA", direction: "rtl" }}>
       <header className="flex items-center justify-between px-6 py-4 bg-white border-b" style={{ borderColor: "rgba(0,0,0,.08)" }}>
