@@ -472,6 +472,8 @@ function FaqPanel({ faqs, onSaved, onRefresh }: { faqs: Faq[]; onSaved: (m: stri
           key={f.id}
           index={i}
           faq={f}
+          isOpen={openId === f.id}
+          onToggle={() => setOpenId((cur) => (cur === f.id ? "" : f.id))}
           onSave={async (updated) => { await save({ data: updated }); onSaved("נשמר"); onRefresh(); }}
           onDelete={async () => { if (confirm("למחוק?")) { await del({ data: { id: f.id } }); onRefresh(); } }}
           onUp={() => move(i, -1)}
