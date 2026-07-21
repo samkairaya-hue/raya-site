@@ -407,17 +407,16 @@ function MagazinePanel({ cards, onSaved, onRefresh }: { cards: MagazineCard[]; o
   );
 }
 
-function MagCardRow({ card, onSaved, onRefresh, onDelete }: { card: MagazineCard; onSaved: (m: string) => void; onRefresh: () => void; onDelete: () => void }) {
-  const [open, setOpen] = useState(false);
+function MagCardRow({ card, isOpen, onToggle, onSaved, onRefresh, onDelete }: { card: MagazineCard; isOpen: boolean; onToggle: () => void; onSaved: (m: string) => void; onRefresh: () => void; onDelete: () => void }) {
   const [c, setC] = useState<MagazineCard>(card);
   const save = useServerFn(saveCard);
   return (
     <div className="border rounded-lg" style={{ borderColor: "rgba(0,0,0,.08)" }}>
-      <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between p-4 text-right bg-transparent border-0 cursor-pointer">
+      <button onClick={onToggle} className="w-full flex items-center justify-between p-4 text-right bg-transparent border-0 cursor-pointer">
         <span className="font-bold">{c.title || "(ללא כותרת)"}</span>
-        <span style={{ color: "var(--accent-primary)" }}>{open ? "−" : "+"}</span>
+        <span style={{ color: "var(--accent-primary)" }}>{isOpen ? "−" : "+"}</span>
       </button>
-      {open && (
+      {isOpen && (
         <form className="p-4 pt-0 flex flex-col gap-3" onSubmit={async (e) => {
           e.preventDefault();
           await save({ data: { kind: "magazine", card: c } });
