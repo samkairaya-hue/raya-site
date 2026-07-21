@@ -29,6 +29,7 @@ function Admin() {
   const load = useServerFn(loadSite);
   const [site, setSite] = useState<SiteData | null>(null);
   const [msg, setMsg] = useState("");
+  const [openPanel, setOpenPanel] = useState<string>("theme");
 
   useEffect(() => { load().then(setSite); }, [load]);
 
@@ -36,6 +37,11 @@ function Admin() {
 
   const refresh = () => load().then(setSite);
   const flashMsg = (m: string) => flash(setMsg, m);
+  const panelProps = (id: string) => ({
+    id,
+    isOpen: openPanel === id,
+    onToggle: () => setOpenPanel((cur) => (cur === id ? "" : id)),
+  });
 
   return (
     <div className="max-w-5xl mx-auto p-6 flex flex-col gap-4">
@@ -44,6 +50,7 @@ function Admin() {
           {msg}
         </div>
       )}
+
 
       <Panel title="🎨 ערכת צבעים" defaultOpen>
         <ThemePanel site={site} onSaved={flashMsg} onRefresh={refresh} />
