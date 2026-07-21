@@ -494,20 +494,21 @@ function FaqPanel({ faqs, onSaved, onRefresh }: { faqs: Faq[]; onSaved: (m: stri
   );
 }
 
-function FaqRow({ faq, index, onSave, onDelete, onUp, onDown, isFirst, isLast }: {
+function FaqRow({ faq, index, isOpen, onToggle, onSave, onDelete, onUp, onDown, isFirst, isLast }: {
   faq: Faq;
   index: number;
+  isOpen: boolean;
+  onToggle: () => void;
   onSave: (f: Faq) => Promise<void>;
   onDelete: () => void;
   onUp: () => void; onDown: () => void; isFirst: boolean; isLast: boolean;
 }) {
-  const [open, setOpen] = useState(false);
   const [f, setF] = useState(faq);
   useEffect(() => setF(faq), [faq]);
   return (
     <div className="border rounded-lg" style={{ borderColor: "rgba(0,0,0,.08)" }}>
       <div className="flex items-center justify-between p-3">
-        <button onClick={() => setOpen(!open)} className="flex-1 text-right bg-transparent border-0 cursor-pointer">
+        <button onClick={onToggle} className="flex-1 text-right bg-transparent border-0 cursor-pointer">
           <span className="font-bold">{index + 1}. {f.question || "(שאלה ריקה)"}</span>
         </button>
         <div className="flex gap-1">
@@ -516,7 +517,7 @@ function FaqRow({ faq, index, onSave, onDelete, onUp, onDown, isFirst, isLast }:
           <button className="px-2" onClick={onDelete} type="button" style={{ color: "var(--destructive)" }}>✕</button>
         </div>
       </div>
-      {open && (
+      {isOpen && (
         <form className="p-4 pt-0 flex flex-col gap-3" onSubmit={async (e) => { e.preventDefault(); await onSave(f); }}>
           <Row label="שאלה (ללא מספור – יופיע אוטומטית)"><input value={f.question} onChange={(e) => setF({ ...f, question: e.target.value })} /></Row>
           <Row label="תשובה"><textarea rows={5} value={f.answer} onChange={(e) => setF({ ...f, answer: e.target.value })} /></Row>
