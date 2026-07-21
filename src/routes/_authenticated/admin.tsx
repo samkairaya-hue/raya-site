@@ -451,6 +451,7 @@ function FaqPanel({ faqs, onSaved, onRefresh }: { faqs: Faq[]; onSaved: (m: stri
   const del = useServerFn(deleteFaq);
   const reorder = useServerFn(reorderFaqs);
   const [items, setItems] = useState(faqs);
+  const [openId, setOpenId] = useState<string>("");
   useEffect(() => setItems(faqs), [faqs]);
 
   async function move(idx: number, dir: -1 | 1) {
