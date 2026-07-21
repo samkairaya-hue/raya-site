@@ -180,28 +180,23 @@ export const sendContact = createServerFn({ method: "POST" })
       .eq("key", "settings")
       .maybeSingle();
     const settings = (settingsRow?.data ?? {}) as any;
-    const to = settings.admin_email as string | undefined;
-    if (!to) throw new Error("admin_email not configured");
+    const to = (settings.admin_email as string | undefined) ?? "(not configured)";
 
     const firstName = data.name.split(/\s+/)[0] || data.name;
     const subject = `פניה באתר: ${firstName}`;
     const bodyText = `שם: ${data.name}\nטלפון: ${data.phone}\n\n${data.message}`;
-    const bodyHtml = `<div dir="rtl" style="font-family:Arial,sans-serif;line-height:1.7">
-      <p><strong>שם:</strong> ${escapeHtml(data.name)}</p>
-      <p><strong>טלפון:</strong> ${escapeHtml(data.phone)}</p>
-      <p>${escapeHtml(data.message).replace(/\n/g, "<br/>")}</p>
-    </div>`;
 
-    const { sendLovableEmail } = await import("@lovable.dev/email-js");
-    const apiKey = process.env.LOVABLE_API_KEY;
-    if (!apiKey) throw new Error("LOVABLE_API_KEY not configured");
-    const from = process.env.LOVABLE_EMAIL_FROM || `noreply@lovable.app`;
-    const result = await sendLovableEmail(
-      { to, from, subject, html: bodyHtml, text: bodyText },
-      { apiKey },
-    );
-    return result;
+    // MOCK EMAIL SENDING — real delivery will be wired up once an email domain is configured.
+    console.log("[mock-email] contact form submission", {
+      to,
+      subject,
+      body: bodyText,
+      timestamp: new Date().toISOString(),
+    });
+    await new Promise((r) => setTimeout(r, 300));
+    return { sent: true, mocked: true, to, subject };
   });
+
 
 function escapeHtml(s: string) {
   return s
