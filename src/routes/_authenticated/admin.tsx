@@ -362,13 +362,22 @@ function CardRow({ kind, card, isOpen, onToggle, onSaved, onRefresh }: { kind: "
 function MagazinePanel({ cards, onSaved, onRefresh }: { cards: MagazineCard[]; onSaved: (m: string) => void; onRefresh: () => void }) {
   const save = useServerFn(saveCard);
   const del = useServerFn(deleteCard);
+  const [openId, setOpenId] = useState<string>("");
   return (
     <div className="flex flex-col gap-3">
       <p className="text-xs" style={{ color: "var(--text-muted)" }}>אם "תוכן עמוד היעד" ריק – הכרטיס לא יהיה לחיץ.</p>
       {cards.map((c) => (
-        <MagCardRow key={c.id} card={c} onSaved={onSaved} onRefresh={onRefresh} onDelete={async () => {
-          if (confirm("למחוק?")) { await del({ data: { kind: "magazine", id: c.id } }); onRefresh(); }
-        }} />
+        <MagCardRow
+          key={c.id}
+          card={c}
+          isOpen={openId === c.id}
+          onToggle={() => setOpenId((cur) => (cur === c.id ? "" : c.id))}
+          onSaved={onSaved}
+          onRefresh={onRefresh}
+          onDelete={async () => {
+            if (confirm("למחוק?")) { await del({ data: { kind: "magazine", id: c.id } }); onRefresh(); }
+          }}
+        />
       ))}
       <button
         className="cta self-start"
