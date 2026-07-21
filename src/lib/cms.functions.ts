@@ -161,6 +161,34 @@ export const reorderFaqs = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+// Upload media (image) to private cms-media bucket and return a long-lived signed URL
+export const uploadMedia = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { filename: string; contentType: string; base64: string }) =>
+    z
+      .object({
+        filename: z.string().min(1).max(200),
+        contentType: z.string().min(1).max(100),
+        base64: z.string().min(1),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const cleanName = data.filename.replace(/[^a-zA-Z0-9._-]/g, "_");
+    const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${cleanName}`;
+    const bytes = Uint8Array.from(atob(data.base64), (c) => c.charCodeAt(0));
+    const { error: upErr } = await context.supabase.storage
+      .from("cms-media")
+      .upload(path, bytes, { contentType: data.contentType, upsert: false });
+    if (upErr) throw new Error(upErr.message);
+    // ~100 years
+    const { data: signed, error: sErr } = await context.supabase.storage
+      .from("cms-media")
+      .createSignedUrl(path, 60 * 60 * 24 * 365 * 100);
+    if (sErr || !signed) throw new Error(sErr?.message ?? "signed url failed");
+    return { url: signed.signedUrl, path };
+  });
+
 // Contact form -> admin email via Lovable Emails
 export const sendContact = createServerFn({ method: "POST" })
   .inputValidator((d: { name: string; phone: string; message: string }) =>

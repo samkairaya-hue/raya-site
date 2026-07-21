@@ -23,7 +23,7 @@ export type HeroContent = {
   image_url: string;
 };
 
-export type EmidContent = { title: string; body: string };
+export type EmidContent = { title: string; body: string; image_url?: string };
 export type HeaderPair = { title: string; subtitle: string };
 export type BridgeContent = { title: string; body: string };
 export type AboutContent = { title: string; body: string; credentials: string; image_url: string };

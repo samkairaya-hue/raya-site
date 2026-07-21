@@ -79,14 +79,23 @@ function EmidSection({ data }: { data: SiteData }) {
           <ExpandableText text={e.body} lines={8} className="text-lg leading-8" />
         </div>
         <div className="flex justify-center">
-          <div className="p-12 flex items-center justify-center" style={{ background: "#fff", borderRadius: 24, boxShadow: "0 12px 36px rgba(30,41,59,.03)", border: "1px solid rgba(224,122,95,.15)" }}>
-            <svg viewBox="0 0 200 200" width="240" height="240" style={{ color: "var(--accent-primary)" }} fill="none">
-              <path d="M 30 100 C 30 50, 70 50, 70 100 C 70 150, 110 150, 110 100 C 110 70, 130 70, 140 100 L 180 100" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" />
-              <circle cx="30" cy="100" r="6" fill="currentColor" opacity="0.5" />
-              <circle cx="180" cy="100" r="6" fill="currentColor" />
-              <path d="M 50 100 A 50 50 0 0 1 150 100" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.4" />
-            </svg>
-          </div>
+          {e.image_url ? (
+            <img
+              src={e.image_url}
+              alt=""
+              className="w-full"
+              style={{ maxWidth: 380, height: 420, objectFit: "cover", borderRadius: 24, boxShadow: "0 12px 36px rgba(30,41,59,.08)" }}
+            />
+          ) : (
+            <div className="p-12 flex items-center justify-center" style={{ background: "#fff", borderRadius: 24, boxShadow: "0 12px 36px rgba(30,41,59,.03)", border: "1px solid rgba(224,122,95,.15)" }}>
+              <svg viewBox="0 0 200 200" width="240" height="240" style={{ color: "var(--accent-primary)" }} fill="none">
+                <path d="M 30 100 C 30 50, 70 50, 70 100 C 70 150, 110 150, 110 100 C 110 70, 130 70, 140 100 L 180 100" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" />
+                <circle cx="30" cy="100" r="6" fill="currentColor" opacity="0.5" />
+                <circle cx="180" cy="100" r="6" fill="currentColor" />
+                <path d="M 50 100 A 50 50 0 0 1 150 100" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.4" />
+              </svg>
+            </div>
+          )}
         </div>
       </div>
     </section>
@@ -253,7 +262,7 @@ function FaqSection({ data }: { data: SiteData }) {
           <p>{data.faq_header.subtitle}</p>
         </div>
         <div className="flex flex-col gap-4">
-          {data.faqs.map((f) => {
+          {data.faqs.map((f, i) => {
             const open = openId === f.id;
             return (
               <div key={f.id} className="card-surface overflow-hidden" style={{ padding: 0, borderColor: open ? "var(--accent-primary)" : undefined }}>
@@ -262,7 +271,23 @@ function FaqSection({ data }: { data: SiteData }) {
                   className="w-full flex items-center justify-between text-right p-6 bg-transparent border-0 cursor-pointer"
                   aria-expanded={open}
                 >
-                  <h3 style={{ fontSize: "1.1rem", color: open ? "var(--accent-primary)" : "var(--text-dark)" }}>{f.question}</h3>
+                  <div className="flex items-center gap-4 flex-1 text-right">
+                    <span
+                      className="flex items-center justify-center font-bold shrink-0"
+                      style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: "50%",
+                        background: open ? "var(--accent-primary)" : "var(--bg-cream)",
+                        color: open ? "#fff" : "var(--accent-primary)",
+                        fontSize: "0.95rem",
+                        transition: "background .2s, color .2s",
+                      }}
+                    >
+                      {i + 1}
+                    </span>
+                    <h3 style={{ fontSize: "1.1rem", color: open ? "var(--accent-primary)" : "var(--text-dark)" }}>{f.question}</h3>
+                  </div>
                   <span style={{ color: "var(--accent-primary)", fontSize: "1.5rem", transform: open ? "rotate(45deg)" : "none", transition: "transform .3s" }}>+</span>
                 </button>
                 <div style={{ maxHeight: open ? 1000 : 0, overflow: "hidden", transition: "max-height .4s ease" }}>
