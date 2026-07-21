@@ -29,6 +29,7 @@ function Admin() {
   const load = useServerFn(loadSite);
   const [site, setSite] = useState<SiteData | null>(null);
   const [msg, setMsg] = useState("");
+  const [openPanel, setOpenPanel] = useState<string>("theme");
 
   useEffect(() => { load().then(setSite); }, [load]);
 
@@ -36,6 +37,11 @@ function Admin() {
 
   const refresh = () => load().then(setSite);
   const flashMsg = (m: string) => flash(setMsg, m);
+  const panelProps = (id: string) => ({
+    id,
+    isOpen: openPanel === id,
+    onToggle: () => setOpenPanel((cur) => (cur === id ? "" : id)),
+  });
 
   return (
     <div className="max-w-5xl mx-auto p-6 flex flex-col gap-4">
@@ -45,11 +51,12 @@ function Admin() {
         </div>
       )}
 
-      <Panel title="🎨 ערכת צבעים" defaultOpen>
+
+      <Panel title="🎨 ערכת צבעים" {...panelProps("theme")}>
         <ThemePanel site={site} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
 
-      <Panel title="🏠 עמוד 1 – Hero">
+      <Panel title="🏠 עמוד 1 – Hero" {...panelProps("hero")}>
         <JsonPanel
           site={site}
           k="hero"
@@ -66,7 +73,7 @@ function Admin() {
         />
       </Panel>
 
-      <Panel title="🧠 עמוד 2 – שיטת EMID">
+      <Panel title="🧠 עמוד 2 – שיטת EMID" {...panelProps("emid")}>
         <JsonPanel
           site={site}
           k="emid"
@@ -80,44 +87,44 @@ function Admin() {
         />
       </Panel>
 
-      <Panel title="🎯 עמוד 3 – כותרות מטריצה">
+      <Panel title="🎯 עמוד 3 – כותרות מטריצה" {...panelProps("matrix_header")}>
         <JsonPanel site={site} k="matrix_header" fields={[
           ["title", "כותרת"],
           ["subtitle", "תת-כותרת", "textarea"],
         ]} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
-      <Panel title="🎯 עמוד 3 – ריבועי מטריצה (לחיצים ליעד)">
+      <Panel title="🎯 עמוד 3 – ריבועי מטריצה (לחיצים ליעד)" {...panelProps("matrix_cards")}>
         <CardsPanel kind="matrix" cards={site.matrix} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
 
-      <Panel title="🌉 עמוד 4 – Bridge (טקסט מעבר)">
+      <Panel title="🌉 עמוד 4 – Bridge (טקסט מעבר)" {...panelProps("bridge")}>
         <JsonPanel site={site} k="bridge" fields={[
           ["title", "כותרת"],
           ["body", "טקסט", "textarea"],
         ]} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
 
-      <Panel title="✅ עמוד 5 – כותרות תוצאות">
+      <Panel title="✅ עמוד 5 – כותרות תוצאות" {...panelProps("outcomes_header")}>
         <JsonPanel site={site} k="outcomes_header" fields={[
           ["title", "כותרת"],
           ["subtitle", "תת-כותרת", "textarea"],
         ]} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
-      <Panel title="✅ עמוד 5 – ריבועי תוצאות (לחיצים ליעד)">
+      <Panel title="✅ עמוד 5 – ריבועי תוצאות (לחיצים ליעד)" {...panelProps("outcome_cards")}>
         <CardsPanel kind="outcome" cards={site.outcomes} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
 
-      <Panel title="📰 עמוד 6 – כותרות מגזין">
+      <Panel title="📰 עמוד 6 – כותרות מגזין" {...panelProps("magazine_header")}>
         <JsonPanel site={site} k="magazine_header" fields={[
           ["title", "כותרת"],
           ["subtitle", "תת-כותרת", "textarea"],
         ]} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
-      <Panel title="📰 עמוד 6 – כרטיסי מגזין">
+      <Panel title="📰 עמוד 6 – כרטיסי מגזין" {...panelProps("magazine_cards")}>
         <MagazinePanel cards={site.magazine} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
 
-      <Panel title="👤 עמוד 7 – אודות">
+      <Panel title="👤 עמוד 7 – אודות" {...panelProps("about")}>
         <JsonPanel
           site={site}
           k="about"
@@ -132,17 +139,17 @@ function Admin() {
         />
       </Panel>
 
-      <Panel title="❓ עמוד 8 – כותרות FAQ">
+      <Panel title="❓ עמוד 8 – כותרות FAQ" {...panelProps("faq_header")}>
         <JsonPanel site={site} k="faq_header" fields={[
           ["title", "כותרת"],
           ["subtitle", "תת-כותרת", "textarea"],
         ]} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
-      <Panel title="❓ עמוד 8 – שאלות ותשובות (המספור מוצג עיצובית אוטומטית)">
+      <Panel title="❓ עמוד 8 – שאלות ותשובות (המספור מוצג עיצובית אוטומטית)" {...panelProps("faqs")}>
         <FaqPanel faqs={site.faqs} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
 
-      <Panel title="✉️ עמוד 9 – צור קשר (טקסטים)">
+      <Panel title="✉️ עמוד 9 – צור קשר (טקסטים)" {...panelProps("contact")}>
         <JsonPanel site={site} k="contact" fields={[
           ["title", "כותרת"],
           ["subtitle", "תת-כותרת", "textarea"],
@@ -152,11 +159,11 @@ function Admin() {
         ]} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
 
-      <Panel title="⚙️ עמוד 9 – הגדרות כלליות + מייל מנהל">
+      <Panel title="⚙️ עמוד 9 – הגדרות כלליות + מייל מנהל" {...panelProps("settings")}>
         <SettingsPanel site={site} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
 
-      <Panel title="🔻 Footer">
+      <Panel title="🔻 Footer" {...panelProps("footer")}>
         <JsonPanel site={site} k="footer" fields={[
           ["right", "צד ימין (שם)"],
           ["center", "צד מרכז (זכויות)"],
@@ -173,21 +180,21 @@ function flash(setMsg: (s: string) => void, m: string) {
   setTimeout(() => setMsg(""), 2000);
 }
 
-function Panel({ title, children, defaultOpen = false }: { title: string; children: React.ReactNode; defaultOpen?: boolean }) {
-  const [open, setOpen] = useState(defaultOpen);
+function Panel({ title, children, isOpen, onToggle }: { title: string; children: React.ReactNode; isOpen: boolean; onToggle: () => void }) {
   return (
     <div className="card-surface" style={{ padding: 0 }}>
       <button
-        onClick={() => setOpen((v) => !v)}
+        onClick={onToggle}
         className="w-full flex items-center justify-between p-5 text-right bg-transparent border-0 cursor-pointer"
       >
         <h3 style={{ fontSize: "1.05rem" }}>{title}</h3>
-        <span style={{ color: "var(--accent-primary)", transform: open ? "rotate(45deg)" : "none", transition: "transform .2s", fontSize: "1.3rem" }}>+</span>
+        <span style={{ color: "var(--accent-primary)", transform: isOpen ? "rotate(45deg)" : "none", transition: "transform .2s", fontSize: "1.3rem" }}>+</span>
       </button>
-      {open && <div className="p-6 pt-2 border-t" style={{ borderColor: "rgba(0,0,0,.06)" }}>{children}</div>}
+      {isOpen && <div className="p-6 pt-2 border-t" style={{ borderColor: "rgba(0,0,0,.06)" }}>{children}</div>}
     </div>
   );
 }
+
 
 // ===== Panels =====
 
@@ -288,32 +295,41 @@ function CardsPanel({ kind, cards, onSaved, onRefresh }: {
   cards: Card[];
   onSaved: (m: string) => void; onRefresh: () => void;
 }) {
+  const [openId, setOpenId] = useState<string>("");
   return (
     <div className="flex flex-col gap-3">
       <p className="text-xs" style={{ color: "var(--text-muted)" }}>
         אם השדה "טקסט עמוד יעד" ריק – הריבוע לא יהיה לחיץ.
       </p>
       {cards.map((c) => (
-        <CardRow key={c.id} kind={kind} card={c} onSaved={onSaved} onRefresh={onRefresh} />
+        <CardRow
+          key={c.id}
+          kind={kind}
+          card={c}
+          isOpen={openId === c.id}
+          onToggle={() => setOpenId((cur) => (cur === c.id ? "" : c.id))}
+          onSaved={onSaved}
+          onRefresh={onRefresh}
+        />
       ))}
     </div>
   );
 }
 
-function CardRow({ kind, card, onSaved, onRefresh }: { kind: "matrix" | "outcome"; card: Card; onSaved: (m: string) => void; onRefresh: () => void }) {
-  const [open, setOpen] = useState(false);
+
+function CardRow({ kind, card, isOpen, onToggle, onSaved, onRefresh }: { kind: "matrix" | "outcome"; card: Card; isOpen: boolean; onToggle: () => void; onSaved: (m: string) => void; onRefresh: () => void }) {
   const [c, setC] = useState<Card>(card);
   const save = useServerFn(saveCard);
   return (
     <div className="border rounded-lg" style={{ borderColor: "rgba(0,0,0,.08)" }}>
       <button
-        onClick={() => setOpen(!open)}
+        onClick={onToggle}
         className="w-full flex items-center justify-between p-4 text-right bg-transparent border-0 cursor-pointer"
       >
         <span className="font-bold">{c.title || "(ללא כותרת)"} <span className="text-xs opacity-60">#{c.sort_order}</span></span>
-        <span style={{ color: "var(--accent-primary)" }}>{open ? "−" : "+"}</span>
+        <span style={{ color: "var(--accent-primary)" }}>{isOpen ? "−" : "+"}</span>
       </button>
-      {open && (
+      {isOpen && (
         <form
           className="p-4 pt-0 flex flex-col gap-3"
           onSubmit={async (e) => {
@@ -346,13 +362,22 @@ function CardRow({ kind, card, onSaved, onRefresh }: { kind: "matrix" | "outcome
 function MagazinePanel({ cards, onSaved, onRefresh }: { cards: MagazineCard[]; onSaved: (m: string) => void; onRefresh: () => void }) {
   const save = useServerFn(saveCard);
   const del = useServerFn(deleteCard);
+  const [openId, setOpenId] = useState<string>("");
   return (
     <div className="flex flex-col gap-3">
       <p className="text-xs" style={{ color: "var(--text-muted)" }}>אם "תוכן עמוד היעד" ריק – הכרטיס לא יהיה לחיץ.</p>
       {cards.map((c) => (
-        <MagCardRow key={c.id} card={c} onSaved={onSaved} onRefresh={onRefresh} onDelete={async () => {
-          if (confirm("למחוק?")) { await del({ data: { kind: "magazine", id: c.id } }); onRefresh(); }
-        }} />
+        <MagCardRow
+          key={c.id}
+          card={c}
+          isOpen={openId === c.id}
+          onToggle={() => setOpenId((cur) => (cur === c.id ? "" : c.id))}
+          onSaved={onSaved}
+          onRefresh={onRefresh}
+          onDelete={async () => {
+            if (confirm("למחוק?")) { await del({ data: { kind: "magazine", id: c.id } }); onRefresh(); }
+          }}
+        />
       ))}
       <button
         className="cta self-start"
@@ -382,17 +407,16 @@ function MagazinePanel({ cards, onSaved, onRefresh }: { cards: MagazineCard[]; o
   );
 }
 
-function MagCardRow({ card, onSaved, onRefresh, onDelete }: { card: MagazineCard; onSaved: (m: string) => void; onRefresh: () => void; onDelete: () => void }) {
-  const [open, setOpen] = useState(false);
+function MagCardRow({ card, isOpen, onToggle, onSaved, onRefresh, onDelete }: { card: MagazineCard; isOpen: boolean; onToggle: () => void; onSaved: (m: string) => void; onRefresh: () => void; onDelete: () => void }) {
   const [c, setC] = useState<MagazineCard>(card);
   const save = useServerFn(saveCard);
   return (
     <div className="border rounded-lg" style={{ borderColor: "rgba(0,0,0,.08)" }}>
-      <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between p-4 text-right bg-transparent border-0 cursor-pointer">
+      <button onClick={onToggle} className="w-full flex items-center justify-between p-4 text-right bg-transparent border-0 cursor-pointer">
         <span className="font-bold">{c.title || "(ללא כותרת)"}</span>
-        <span style={{ color: "var(--accent-primary)" }}>{open ? "−" : "+"}</span>
+        <span style={{ color: "var(--accent-primary)" }}>{isOpen ? "−" : "+"}</span>
       </button>
-      {open && (
+      {isOpen && (
         <form className="p-4 pt-0 flex flex-col gap-3" onSubmit={async (e) => {
           e.preventDefault();
           await save({ data: { kind: "magazine", card: c } });
@@ -427,6 +451,7 @@ function FaqPanel({ faqs, onSaved, onRefresh }: { faqs: Faq[]; onSaved: (m: stri
   const del = useServerFn(deleteFaq);
   const reorder = useServerFn(reorderFaqs);
   const [items, setItems] = useState(faqs);
+  const [openId, setOpenId] = useState<string>("");
   useEffect(() => setItems(faqs), [faqs]);
 
   async function move(idx: number, dir: -1 | 1) {
@@ -447,6 +472,8 @@ function FaqPanel({ faqs, onSaved, onRefresh }: { faqs: Faq[]; onSaved: (m: stri
           key={f.id}
           index={i}
           faq={f}
+          isOpen={openId === f.id}
+          onToggle={() => setOpenId((cur) => (cur === f.id ? "" : f.id))}
           onSave={async (updated) => { await save({ data: updated }); onSaved("נשמר"); onRefresh(); }}
           onDelete={async () => { if (confirm("למחוק?")) { await del({ data: { id: f.id } }); onRefresh(); } }}
           onUp={() => move(i, -1)}
@@ -467,20 +494,21 @@ function FaqPanel({ faqs, onSaved, onRefresh }: { faqs: Faq[]; onSaved: (m: stri
   );
 }
 
-function FaqRow({ faq, index, onSave, onDelete, onUp, onDown, isFirst, isLast }: {
+function FaqRow({ faq, index, isOpen, onToggle, onSave, onDelete, onUp, onDown, isFirst, isLast }: {
   faq: Faq;
   index: number;
+  isOpen: boolean;
+  onToggle: () => void;
   onSave: (f: Faq) => Promise<void>;
   onDelete: () => void;
   onUp: () => void; onDown: () => void; isFirst: boolean; isLast: boolean;
 }) {
-  const [open, setOpen] = useState(false);
   const [f, setF] = useState(faq);
   useEffect(() => setF(faq), [faq]);
   return (
     <div className="border rounded-lg" style={{ borderColor: "rgba(0,0,0,.08)" }}>
       <div className="flex items-center justify-between p-3">
-        <button onClick={() => setOpen(!open)} className="flex-1 text-right bg-transparent border-0 cursor-pointer">
+        <button onClick={onToggle} className="flex-1 text-right bg-transparent border-0 cursor-pointer">
           <span className="font-bold">{index + 1}. {f.question || "(שאלה ריקה)"}</span>
         </button>
         <div className="flex gap-1">
@@ -489,7 +517,7 @@ function FaqRow({ faq, index, onSave, onDelete, onUp, onDown, isFirst, isLast }:
           <button className="px-2" onClick={onDelete} type="button" style={{ color: "var(--destructive)" }}>✕</button>
         </div>
       </div>
-      {open && (
+      {isOpen && (
         <form className="p-4 pt-0 flex flex-col gap-3" onSubmit={async (e) => { e.preventDefault(); await onSave(f); }}>
           <Row label="שאלה (ללא מספור – יופיע אוטומטית)"><input value={f.question} onChange={(e) => setF({ ...f, question: e.target.value })} /></Row>
           <Row label="תשובה"><textarea rows={5} value={f.answer} onChange={(e) => setF({ ...f, answer: e.target.value })} /></Row>
