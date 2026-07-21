@@ -52,11 +52,11 @@ function Admin() {
       )}
 
 
-      <Panel title="🎨 ערכת צבעים" defaultOpen>
+      <Panel title="🎨 ערכת צבעים" {...panelProps("theme")}>
         <ThemePanel site={site} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
 
-      <Panel title="🏠 עמוד 1 – Hero">
+      <Panel title="🏠 עמוד 1 – Hero" {...panelProps("hero")}>
         <JsonPanel
           site={site}
           k="hero"
@@ -73,7 +73,7 @@ function Admin() {
         />
       </Panel>
 
-      <Panel title="🧠 עמוד 2 – שיטת EMID">
+      <Panel title="🧠 עמוד 2 – שיטת EMID" {...panelProps("emid")}>
         <JsonPanel
           site={site}
           k="emid"
@@ -87,44 +87,44 @@ function Admin() {
         />
       </Panel>
 
-      <Panel title="🎯 עמוד 3 – כותרות מטריצה">
+      <Panel title="🎯 עמוד 3 – כותרות מטריצה" {...panelProps("matrix_header")}>
         <JsonPanel site={site} k="matrix_header" fields={[
           ["title", "כותרת"],
           ["subtitle", "תת-כותרת", "textarea"],
         ]} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
-      <Panel title="🎯 עמוד 3 – ריבועי מטריצה (לחיצים ליעד)">
+      <Panel title="🎯 עמוד 3 – ריבועי מטריצה (לחיצים ליעד)" {...panelProps("matrix_cards")}>
         <CardsPanel kind="matrix" cards={site.matrix} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
 
-      <Panel title="🌉 עמוד 4 – Bridge (טקסט מעבר)">
+      <Panel title="🌉 עמוד 4 – Bridge (טקסט מעבר)" {...panelProps("bridge")}>
         <JsonPanel site={site} k="bridge" fields={[
           ["title", "כותרת"],
           ["body", "טקסט", "textarea"],
         ]} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
 
-      <Panel title="✅ עמוד 5 – כותרות תוצאות">
+      <Panel title="✅ עמוד 5 – כותרות תוצאות" {...panelProps("outcomes_header")}>
         <JsonPanel site={site} k="outcomes_header" fields={[
           ["title", "כותרת"],
           ["subtitle", "תת-כותרת", "textarea"],
         ]} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
-      <Panel title="✅ עמוד 5 – ריבועי תוצאות (לחיצים ליעד)">
+      <Panel title="✅ עמוד 5 – ריבועי תוצאות (לחיצים ליעד)" {...panelProps("outcome_cards")}>
         <CardsPanel kind="outcome" cards={site.outcomes} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
 
-      <Panel title="📰 עמוד 6 – כותרות מגזין">
+      <Panel title="📰 עמוד 6 – כותרות מגזין" {...panelProps("magazine_header")}>
         <JsonPanel site={site} k="magazine_header" fields={[
           ["title", "כותרת"],
           ["subtitle", "תת-כותרת", "textarea"],
         ]} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
-      <Panel title="📰 עמוד 6 – כרטיסי מגזין">
+      <Panel title="📰 עמוד 6 – כרטיסי מגזין" {...panelProps("magazine_cards")}>
         <MagazinePanel cards={site.magazine} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
 
-      <Panel title="👤 עמוד 7 – אודות">
+      <Panel title="👤 עמוד 7 – אודות" {...panelProps("about")}>
         <JsonPanel
           site={site}
           k="about"
@@ -139,17 +139,17 @@ function Admin() {
         />
       </Panel>
 
-      <Panel title="❓ עמוד 8 – כותרות FAQ">
+      <Panel title="❓ עמוד 8 – כותרות FAQ" {...panelProps("faq_header")}>
         <JsonPanel site={site} k="faq_header" fields={[
           ["title", "כותרת"],
           ["subtitle", "תת-כותרת", "textarea"],
         ]} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
-      <Panel title="❓ עמוד 8 – שאלות ותשובות (המספור מוצג עיצובית אוטומטית)">
+      <Panel title="❓ עמוד 8 – שאלות ותשובות (המספור מוצג עיצובית אוטומטית)" {...panelProps("faqs")}>
         <FaqPanel faqs={site.faqs} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
 
-      <Panel title="✉️ עמוד 9 – צור קשר (טקסטים)">
+      <Panel title="✉️ עמוד 9 – צור קשר (טקסטים)" {...panelProps("contact")}>
         <JsonPanel site={site} k="contact" fields={[
           ["title", "כותרת"],
           ["subtitle", "תת-כותרת", "textarea"],
@@ -159,11 +159,11 @@ function Admin() {
         ]} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
 
-      <Panel title="⚙️ עמוד 9 – הגדרות כלליות + מייל מנהל">
+      <Panel title="⚙️ עמוד 9 – הגדרות כלליות + מייל מנהל" {...panelProps("settings")}>
         <SettingsPanel site={site} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
 
-      <Panel title="🔻 Footer">
+      <Panel title="🔻 Footer" {...panelProps("footer")}>
         <JsonPanel site={site} k="footer" fields={[
           ["right", "צד ימין (שם)"],
           ["center", "צד מרכז (זכויות)"],
@@ -180,21 +180,21 @@ function flash(setMsg: (s: string) => void, m: string) {
   setTimeout(() => setMsg(""), 2000);
 }
 
-function Panel({ title, children, defaultOpen = false }: { title: string; children: React.ReactNode; defaultOpen?: boolean }) {
-  const [open, setOpen] = useState(defaultOpen);
+function Panel({ title, children, isOpen, onToggle }: { title: string; children: React.ReactNode; isOpen: boolean; onToggle: () => void }) {
   return (
     <div className="card-surface" style={{ padding: 0 }}>
       <button
-        onClick={() => setOpen((v) => !v)}
+        onClick={onToggle}
         className="w-full flex items-center justify-between p-5 text-right bg-transparent border-0 cursor-pointer"
       >
         <h3 style={{ fontSize: "1.05rem" }}>{title}</h3>
-        <span style={{ color: "var(--accent-primary)", transform: open ? "rotate(45deg)" : "none", transition: "transform .2s", fontSize: "1.3rem" }}>+</span>
+        <span style={{ color: "var(--accent-primary)", transform: isOpen ? "rotate(45deg)" : "none", transition: "transform .2s", fontSize: "1.3rem" }}>+</span>
       </button>
-      {open && <div className="p-6 pt-2 border-t" style={{ borderColor: "rgba(0,0,0,.06)" }}>{children}</div>}
+      {isOpen && <div className="p-6 pt-2 border-t" style={{ borderColor: "rgba(0,0,0,.06)" }}>{children}</div>}
     </div>
   );
 }
+
 
 // ===== Panels =====
 
