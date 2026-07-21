@@ -317,20 +317,19 @@ function CardsPanel({ kind, cards, onSaved, onRefresh }: {
 }
 
 
-function CardRow({ kind, card, onSaved, onRefresh }: { kind: "matrix" | "outcome"; card: Card; onSaved: (m: string) => void; onRefresh: () => void }) {
-  const [open, setOpen] = useState(false);
+function CardRow({ kind, card, isOpen, onToggle, onSaved, onRefresh }: { kind: "matrix" | "outcome"; card: Card; isOpen: boolean; onToggle: () => void; onSaved: (m: string) => void; onRefresh: () => void }) {
   const [c, setC] = useState<Card>(card);
   const save = useServerFn(saveCard);
   return (
     <div className="border rounded-lg" style={{ borderColor: "rgba(0,0,0,.08)" }}>
       <button
-        onClick={() => setOpen(!open)}
+        onClick={onToggle}
         className="w-full flex items-center justify-between p-4 text-right bg-transparent border-0 cursor-pointer"
       >
         <span className="font-bold">{c.title || "(ללא כותרת)"} <span className="text-xs opacity-60">#{c.sort_order}</span></span>
-        <span style={{ color: "var(--accent-primary)" }}>{open ? "−" : "+"}</span>
+        <span style={{ color: "var(--accent-primary)" }}>{isOpen ? "−" : "+"}</span>
       </button>
-      {open && (
+      {isOpen && (
         <form
           className="p-4 pt-0 flex flex-col gap-3"
           onSubmit={async (e) => {
