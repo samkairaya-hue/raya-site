@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   loadSite,
   saveContent,
@@ -11,10 +11,19 @@ import {
   reorderFaqs,
 } from "@/lib/cms.functions";
 import type { SiteData, Card, MagazineCard, Faq } from "@/lib/cms-types";
+import { ImageUpload } from "@/components/ImageUpload";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   component: Admin,
 });
+
+const HERO_RES = "רזולוציה מומלצת: 760×960 פיקסלים (יחס 4:5), עד 500KB.";
+const EMID_RES = "רזולוציה מומלצת: 800×900 פיקסלים, עד 500KB.";
+const ABOUT_RES = "רזולוציה מומלצת: 800×800 פיקסלים (ריבוע), עד 500KB.";
+const CARD_RES = "רזולוציה מומלצת: 600×400 פיקסלים (יחס 3:2), עד 300KB.";
+const TARGET_RES = "רזולוציה מומלצת: 1200×675 פיקסלים (יחס 16:9), עד 500KB.";
+const MAG_RES = "רזולוציה מומלצת: 800×500 פיקסלים (יחס 16:10), עד 400KB.";
+const ARTICLE_RES = "רזולוציה מומלצת: 1200×675 פיקסלים (יחס 16:9), עד 500KB.";
 
 function Admin() {
   const load = useServerFn(loadSite);
@@ -25,6 +34,9 @@ function Admin() {
 
   if (!site) return <div className="p-10 text-center">טוען…</div>;
 
+  const refresh = () => load().then(setSite);
+  const flashMsg = (m: string) => flash(setMsg, m);
+
   return (
     <div className="max-w-5xl mx-auto p-6 flex flex-col gap-4">
       {msg && (
@@ -32,78 +44,104 @@ function Admin() {
           {msg}
         </div>
       )}
-      <Panel title="⚙️ הגדרות כלליות + מייל מנהל" defaultOpen>
-        <SettingsPanel site={site} onSaved={(m) => flash(setMsg, m)} onRefresh={() => load().then(setSite)} />
+
+      <Panel title="🎨 ערכת צבעים" defaultOpen>
+        <ThemePanel site={site} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
-      <Panel title="🎨 ערכת צבעים">
-        <ThemePanel site={site} onSaved={(m) => flash(setMsg, m)} onRefresh={() => load().then(setSite)} />
+
+      <Panel title="🏠 עמוד 1 – Hero">
+        <JsonPanel
+          site={site}
+          k="hero"
+          fields={[
+            ["subtitle", "כותרת עליונה"],
+            ["title", "כותרת ראשית", "textarea"],
+            ["subheading", "תת-כותרת", "textarea"],
+            ["body", "פסקת פתיחה", "textarea"],
+            ["button_text", "טקסט כפתור"],
+            ["image_url", "תמונת עמוד ראשי", "image", HERO_RES],
+          ]}
+          onSaved={flashMsg}
+          onRefresh={refresh}
+        />
       </Panel>
-      <Panel title="🏠 עמוד ראשי – כותרת (Hero)">
-        <JsonPanel site={site} k="hero" fields={[
-          ["subtitle", "כותרת עליונה"],
-          ["title", "כותרת ראשית", "textarea"],
-          ["subheading", "תת-כותרת", "textarea"],
-          ["body", "פסקת פתיחה", "textarea"],
-          ["button_text", "טקסט כפתור"],
-          ["image_url", "כתובת תמונה (URL)"],
-        ]} onSaved={(m) => flash(setMsg, m)} onRefresh={() => load().then(setSite)} />
-      </Panel>
+
       <Panel title="🧠 עמוד 2 – שיטת EMID">
-        <JsonPanel site={site} k="emid" fields={[
-          ["title", "כותרת"],
-          ["body", "טקסט", "textarea"],
-        ]} onSaved={(m) => flash(setMsg, m)} onRefresh={() => load().then(setSite)} />
+        <JsonPanel
+          site={site}
+          k="emid"
+          fields={[
+            ["title", "כותרת"],
+            ["body", "טקסט", "textarea"],
+            ["image_url", "תמונת העמוד", "image", EMID_RES],
+          ]}
+          onSaved={flashMsg}
+          onRefresh={refresh}
+        />
       </Panel>
+
       <Panel title="🎯 עמוד 3 – כותרות מטריצה">
         <JsonPanel site={site} k="matrix_header" fields={[
           ["title", "כותרת"],
           ["subtitle", "תת-כותרת", "textarea"],
-        ]} onSaved={(m) => flash(setMsg, m)} onRefresh={() => load().then(setSite)} />
+        ]} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
-      <Panel title="🎯 עמוד 3 – ריבועי מטריצה (לחיצים ליעד עם עיצוב 'מומחיות')">
-        <CardsPanel kind="matrix" cards={site.matrix} onSaved={(m) => flash(setMsg, m)} onRefresh={() => load().then(setSite)} />
+      <Panel title="🎯 עמוד 3 – ריבועי מטריצה (לחיצים ליעד)">
+        <CardsPanel kind="matrix" cards={site.matrix} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
+
       <Panel title="🌉 עמוד 4 – Bridge (טקסט מעבר)">
         <JsonPanel site={site} k="bridge" fields={[
           ["title", "כותרת"],
           ["body", "טקסט", "textarea"],
-        ]} onSaved={(m) => flash(setMsg, m)} onRefresh={() => load().then(setSite)} />
+        ]} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
+
       <Panel title="✅ עמוד 5 – כותרות תוצאות">
         <JsonPanel site={site} k="outcomes_header" fields={[
           ["title", "כותרת"],
           ["subtitle", "תת-כותרת", "textarea"],
-        ]} onSaved={(m) => flash(setMsg, m)} onRefresh={() => load().then(setSite)} />
+        ]} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
-      <Panel title="✅ עמוד 5 – ריבועי תוצאות (לחיצים ליעד עם עיצוב 'מומחיות')">
-        <CardsPanel kind="outcome" cards={site.outcomes} onSaved={(m) => flash(setMsg, m)} onRefresh={() => load().then(setSite)} />
+      <Panel title="✅ עמוד 5 – ריבועי תוצאות (לחיצים ליעד)">
+        <CardsPanel kind="outcome" cards={site.outcomes} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
+
       <Panel title="📰 עמוד 6 – כותרות מגזין">
         <JsonPanel site={site} k="magazine_header" fields={[
           ["title", "כותרת"],
           ["subtitle", "תת-כותרת", "textarea"],
-        ]} onSaved={(m) => flash(setMsg, m)} onRefresh={() => load().then(setSite)} />
+        ]} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
-      <Panel title="📰 עמוד 6 – כרטיסי מגזין (לחיצים ליעד בעיצוב 'מאמר')">
-        <MagazinePanel cards={site.magazine} onSaved={(m) => flash(setMsg, m)} onRefresh={() => load().then(setSite)} />
+      <Panel title="📰 עמוד 6 – כרטיסי מגזין">
+        <MagazinePanel cards={site.magazine} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
+
       <Panel title="👤 עמוד 7 – אודות">
-        <JsonPanel site={site} k="about" fields={[
-          ["title", "כותרת"],
-          ["body", "טקסט", "textarea"],
-          ["credentials", "הסמכות", "textarea"],
-          ["image_url", "כתובת תמונה (URL)"],
-        ]} onSaved={(m) => flash(setMsg, m)} onRefresh={() => load().then(setSite)} />
+        <JsonPanel
+          site={site}
+          k="about"
+          fields={[
+            ["title", "כותרת"],
+            ["body", "טקסט", "textarea"],
+            ["credentials", "הסמכות", "textarea"],
+            ["image_url", "תמונת אודות", "image", ABOUT_RES],
+          ]}
+          onSaved={flashMsg}
+          onRefresh={refresh}
+        />
       </Panel>
+
       <Panel title="❓ עמוד 8 – כותרות FAQ">
         <JsonPanel site={site} k="faq_header" fields={[
           ["title", "כותרת"],
           ["subtitle", "תת-כותרת", "textarea"],
-        ]} onSaved={(m) => flash(setMsg, m)} onRefresh={() => load().then(setSite)} />
+        ]} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
-      <Panel title="❓ עמוד 8 – שאלות ותשובות (הוסף / הסר / סדר מחדש)">
-        <FaqPanel faqs={site.faqs} onSaved={(m) => flash(setMsg, m)} onRefresh={() => load().then(setSite)} />
+      <Panel title="❓ עמוד 8 – שאלות ותשובות (המספור מוצג עיצובית אוטומטית)">
+        <FaqPanel faqs={site.faqs} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
+
       <Panel title="✉️ עמוד 9 – צור קשר (טקסטים)">
         <JsonPanel site={site} k="contact" fields={[
           ["title", "כותרת"],
@@ -111,14 +149,20 @@ function Admin() {
           ["name_label", "תווית שם"],
           ["phone_label", "תווית טלפון"],
           ["message_label", "תווית הודעה"],
-        ]} onSaved={(m) => flash(setMsg, m)} onRefresh={() => load().then(setSite)} />
+        ]} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
+
+      <Panel title="⚙️ עמוד 9 – הגדרות כלליות + מייל מנהל">
+        <SettingsPanel site={site} onSaved={flashMsg} onRefresh={refresh} />
+      </Panel>
+
       <Panel title="🔻 Footer">
         <JsonPanel site={site} k="footer" fields={[
           ["right", "צד ימין (שם)"],
           ["center", "צד מרכז (זכויות)"],
-        ]} onSaved={(m) => flash(setMsg, m)} onRefresh={() => load().then(setSite)} />
+        ]} onSaved={flashMsg} onRefresh={refresh} />
       </Panel>
+
       <div className="h-16" />
     </div>
   );
@@ -147,7 +191,7 @@ function Panel({ title, children, defaultOpen = false }: { title: string; childr
 
 // ===== Panels =====
 
-type FieldDef = [string, string, ("input" | "textarea")?];
+type FieldDef = [string, string, ("input" | "textarea" | "image")?, string?];
 
 function JsonPanel({
   site, k, fields, onSaved, onRefresh,
@@ -174,11 +218,17 @@ function JsonPanel({
         } finally { setSaving(false); }
       }}
     >
-      {fields.map(([key, label, type]) => (
+      {fields.map(([key, label, type, hint]) => (
         <div className="field" key={key}>
           <label>{label}</label>
           {type === "textarea" ? (
             <textarea rows={4} value={state[key] ?? ""} onChange={(e) => setState({ ...state, [key]: e.target.value })} />
+          ) : type === "image" ? (
+            <ImageUpload
+              value={state[key]}
+              onChange={(url) => setState({ ...state, [key]: url })}
+              hint={hint}
+            />
           ) : (
             <input value={state[key] ?? ""} onChange={(e) => setState({ ...state, [key]: e.target.value })} />
           )}
@@ -276,12 +326,16 @@ function CardRow({ kind, card, onSaved, onRefresh }: { kind: "matrix" | "outcome
           <Row label="כותרת"><input value={c.title} onChange={(e) => setC({ ...c, title: e.target.value })} /></Row>
           <Row label="תיאור קצר"><textarea rows={2} value={c.description} onChange={(e) => setC({ ...c, description: e.target.value })} /></Row>
           <Row label="Slug (URL)"><input dir="ltr" value={c.slug} onChange={(e) => setC({ ...c, slug: e.target.value })} /></Row>
-          <Row label="תמונה (URL) – רשות"><input dir="ltr" value={c.image_url || ""} onChange={(e) => setC({ ...c, image_url: e.target.value })} /></Row>
+          <Row label="תמונת הריבוע (רשות)">
+            <ImageUpload value={c.image_url} onChange={(url) => setC({ ...c, image_url: url })} hint={CARD_RES} />
+          </Row>
           <hr />
           <p className="text-xs" style={{ color: "var(--text-muted)" }}>עמוד יעד – מוצג לאחר לחיצה על הריבוע</p>
           <Row label="כותרת עמוד היעד"><input value={c.target_title} onChange={(e) => setC({ ...c, target_title: e.target.value })} /></Row>
           <Row label="תוכן עמוד היעד"><textarea rows={6} value={c.target_body} onChange={(e) => setC({ ...c, target_body: e.target.value })} /></Row>
-          <Row label="תמונת עמוד היעד (URL)"><input dir="ltr" value={c.target_image_url || ""} onChange={(e) => setC({ ...c, target_image_url: e.target.value })} /></Row>
+          <Row label="תמונת עמוד היעד">
+            <ImageUpload value={c.target_image_url} onChange={(url) => setC({ ...c, target_image_url: url })} hint={TARGET_RES} />
+          </Row>
           <button className="cta self-start" type="submit">שמור</button>
         </form>
       )}
@@ -348,12 +402,16 @@ function MagCardRow({ card, onSaved, onRefresh, onDelete }: { card: MagazineCard
           <Row label="כותרת"><input value={c.title} onChange={(e) => setC({ ...c, title: e.target.value })} /></Row>
           <Row label="תיאור"><textarea rows={3} value={c.description} onChange={(e) => setC({ ...c, description: e.target.value })} /></Row>
           <Row label="Slug"><input dir="ltr" value={c.slug} onChange={(e) => setC({ ...c, slug: e.target.value })} /></Row>
-          <Row label="תמונה (URL)"><input dir="ltr" value={c.image_url || ""} onChange={(e) => setC({ ...c, image_url: e.target.value })} /></Row>
+          <Row label="תמונת הכרטיס">
+            <ImageUpload value={c.image_url} onChange={(url) => setC({ ...c, image_url: url })} hint={MAG_RES} />
+          </Row>
           <Row label="סדר"><input type="number" value={c.sort_order} onChange={(e) => setC({ ...c, sort_order: Number(e.target.value) })} /></Row>
           <hr />
           <Row label="כותרת עמוד המאמר"><input value={c.target_title} onChange={(e) => setC({ ...c, target_title: e.target.value })} /></Row>
           <Row label="תוכן המאמר"><textarea rows={8} value={c.target_body} onChange={(e) => setC({ ...c, target_body: e.target.value })} /></Row>
-          <Row label="תמונת המאמר (URL)"><input dir="ltr" value={c.target_image_url || ""} onChange={(e) => setC({ ...c, target_image_url: e.target.value })} /></Row>
+          <Row label="תמונת המאמר">
+            <ImageUpload value={c.target_image_url} onChange={(url) => setC({ ...c, target_image_url: url })} hint={ARTICLE_RES} />
+          </Row>
           <div className="flex gap-3">
             <button className="cta" type="submit">שמור</button>
             <button className="cta" style={{ background: "var(--destructive)" }} type="button" onClick={onDelete}>מחק</button>
@@ -387,6 +445,7 @@ function FaqPanel({ faqs, onSaved, onRefresh }: { faqs: Faq[]; onSaved: (m: stri
       {items.map((f, i) => (
         <FaqRow
           key={f.id}
+          index={i}
           faq={f}
           onSave={async (updated) => { await save({ data: updated }); onSaved("נשמר"); onRefresh(); }}
           onDelete={async () => { if (confirm("למחוק?")) { await del({ data: { id: f.id } }); onRefresh(); } }}
@@ -408,8 +467,9 @@ function FaqPanel({ faqs, onSaved, onRefresh }: { faqs: Faq[]; onSaved: (m: stri
   );
 }
 
-function FaqRow({ faq, onSave, onDelete, onUp, onDown, isFirst, isLast }: {
+function FaqRow({ faq, index, onSave, onDelete, onUp, onDown, isFirst, isLast }: {
   faq: Faq;
+  index: number;
   onSave: (f: Faq) => Promise<void>;
   onDelete: () => void;
   onUp: () => void; onDown: () => void; isFirst: boolean; isLast: boolean;
@@ -421,7 +481,7 @@ function FaqRow({ faq, onSave, onDelete, onUp, onDown, isFirst, isLast }: {
     <div className="border rounded-lg" style={{ borderColor: "rgba(0,0,0,.08)" }}>
       <div className="flex items-center justify-between p-3">
         <button onClick={() => setOpen(!open)} className="flex-1 text-right bg-transparent border-0 cursor-pointer">
-          <span className="font-bold">#{f.sort_order} · {f.question || "(שאלה ריקה)"}</span>
+          <span className="font-bold">{index + 1}. {f.question || "(שאלה ריקה)"}</span>
         </button>
         <div className="flex gap-1">
           <button className="px-2" disabled={isFirst} onClick={onUp} type="button">↑</button>
@@ -431,7 +491,7 @@ function FaqRow({ faq, onSave, onDelete, onUp, onDown, isFirst, isLast }: {
       </div>
       {open && (
         <form className="p-4 pt-0 flex flex-col gap-3" onSubmit={async (e) => { e.preventDefault(); await onSave(f); }}>
-          <Row label="שאלה"><input value={f.question} onChange={(e) => setF({ ...f, question: e.target.value })} /></Row>
+          <Row label="שאלה (ללא מספור – יופיע אוטומטית)"><input value={f.question} onChange={(e) => setF({ ...f, question: e.target.value })} /></Row>
           <Row label="תשובה"><textarea rows={5} value={f.answer} onChange={(e) => setF({ ...f, answer: e.target.value })} /></Row>
           <button className="cta self-start" type="submit">שמור</button>
         </form>
