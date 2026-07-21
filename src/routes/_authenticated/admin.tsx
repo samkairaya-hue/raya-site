@@ -429,7 +429,7 @@ function MagCardRow({ card, isOpen, onToggle, onSaved, onRefresh, onDelete }: { 
           <Row label="תמונת הכרטיס">
             <ImageUpload value={c.image_url} onChange={(url) => setC({ ...c, image_url: url })} hint={MAG_RES} />
           </Row>
-          <Row label="סדר"><input type="number" value={c.sort_order} onChange={(e) => setC({ ...c, sort_order: Number(e.target.value) })} /></Row>
+          
           <hr />
           <Row label="כותרת עמוד המאמר"><input value={c.target_title} onChange={(e) => setC({ ...c, target_title: e.target.value })} /></Row>
           <Row label="תוכן המאמר"><textarea rows={8} value={c.target_body} onChange={(e) => setC({ ...c, target_body: e.target.value })} /></Row>
