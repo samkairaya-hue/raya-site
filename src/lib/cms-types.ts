@@ -12,6 +12,7 @@ export type Settings = {
   admin_email: string;
   submit_button_text: string;
   submit_success_text: string;
+  site_title: string;
 };
 
 export type HeroContent = {
