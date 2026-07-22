@@ -1,5 +1,3 @@
-// Server-only helpers for the CMS password gate.
-import { createMiddleware } from "@tanstack/react-start";
 import { useSession } from "@tanstack/react-start/server";
 
 export type AdminSessionData = { unlocked?: boolean };
@@ -26,12 +24,10 @@ export async function getAdminSession() {
   return useSession<AdminSessionData>(sessionConfig());
 }
 
-export const requireAdminSession = createMiddleware({ type: "function" }).server(
-  async ({ next }) => {
-    const session = await getAdminSession();
-    if (!session.data.unlocked) {
-      throw new Error("Unauthorized");
-    }
-    return next({ context: {} });
-  },
-);
+export async function requireAdminUnlocked() {
+  const session = await getAdminSession();
+  if (!session.data.unlocked) {
+    throw new Error("Unauthorized");
+  }
+  return session;
+}

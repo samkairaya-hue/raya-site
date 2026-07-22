@@ -1,7 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
-import { requireAdminSession } from "./admin-session.server";
 import type { Database } from "@/integrations/supabase/types";
 import type { SiteData } from "./cms-types";
 
@@ -68,11 +67,12 @@ export const getCardBySlug = createServerFn({ method: "GET" })
 // ===== ADMIN =====
 
 export const saveContent = createServerFn({ method: "POST" })
-  .middleware([requireAdminSession])
   .inputValidator((d: { key: string; data: unknown }) =>
     z.object({ key: z.string().min(1), data: z.record(z.string(), z.any()) }).parse(d),
   )
   .handler(async ({ data }) => {
+    const { requireAdminUnlocked } = await import("./admin-session.server");
+    await requireAdminUnlocked();
     const sb = await admin();
     const { error } = await sb
       .from("site_content")
@@ -94,7 +94,6 @@ const cardSchema = z.object({
 });
 
 export const saveCard = createServerFn({ method: "POST" })
-  .middleware([requireAdminSession])
   .inputValidator((d: { kind: "matrix" | "outcome" | "magazine"; card: any }) =>
     z
       .object({
@@ -104,6 +103,8 @@ export const saveCard = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data }) => {
+    const { requireAdminUnlocked } = await import("./admin-session.server");
+    await requireAdminUnlocked();
     const table =
       data.kind === "matrix"
         ? "matrix_cards"
@@ -118,11 +119,12 @@ export const saveCard = createServerFn({ method: "POST" })
   });
 
 export const deleteCard = createServerFn({ method: "POST" })
-  .middleware([requireAdminSession])
   .inputValidator((d: { kind: "magazine"; id: string }) =>
     z.object({ kind: z.literal("magazine"), id: z.string().uuid() }).parse(d),
   )
   .handler(async ({ data }) => {
+    const { requireAdminUnlocked } = await import("./admin-session.server");
+    await requireAdminUnlocked();
     const sb = await admin();
     const { error } = await sb.from("magazine_cards").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
@@ -137,9 +139,10 @@ const faqSchema = z.object({
 });
 
 export const saveFaq = createServerFn({ method: "POST" })
-  .middleware([requireAdminSession])
   .inputValidator((d: any) => faqSchema.parse(d))
   .handler(async ({ data }) => {
+    const { requireAdminUnlocked } = await import("./admin-session.server");
+    await requireAdminUnlocked();
     const sb = await admin();
     const { error } = await sb
       .from("faqs")
@@ -149,9 +152,10 @@ export const saveFaq = createServerFn({ method: "POST" })
   });
 
 export const deleteFaq = createServerFn({ method: "POST" })
-  .middleware([requireAdminSession])
   .inputValidator((d: { id: string }) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data }) => {
+    const { requireAdminUnlocked } = await import("./admin-session.server");
+    await requireAdminUnlocked();
     const sb = await admin();
     const { error } = await sb.from("faqs").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
@@ -159,9 +163,10 @@ export const deleteFaq = createServerFn({ method: "POST" })
   });
 
 export const reorderFaqs = createServerFn({ method: "POST" })
-  .middleware([requireAdminSession])
   .inputValidator((d: { ids: string[] }) => z.object({ ids: z.array(z.string().uuid()) }).parse(d))
   .handler(async ({ data }) => {
+    const { requireAdminUnlocked } = await import("./admin-session.server");
+    await requireAdminUnlocked();
     const sb = await admin();
     for (let i = 0; i < data.ids.length; i++) {
       await sb
@@ -174,7 +179,6 @@ export const reorderFaqs = createServerFn({ method: "POST" })
 
 // Upload media (image) to private cms-media bucket and return a long-lived signed URL
 export const uploadMedia = createServerFn({ method: "POST" })
-  .middleware([requireAdminSession])
   .inputValidator((d: { filename: string; contentType: string; base64: string }) =>
     z
       .object({
@@ -185,6 +189,8 @@ export const uploadMedia = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data }) => {
+    const { requireAdminUnlocked } = await import("./admin-session.server");
+    await requireAdminUnlocked();
     const sb = await admin();
     const cleanName = data.filename.replace(/[^a-zA-Z0-9._-]/g, "_");
     const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${cleanName}`;
