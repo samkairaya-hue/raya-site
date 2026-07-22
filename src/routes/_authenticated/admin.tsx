@@ -10,9 +10,11 @@ import {
   deleteFaq,
   reorderFaqs,
 } from "@/lib/cms.functions";
+import { changeAdminPassword } from "@/lib/admin-auth.functions";
 import type { SiteData, Card, MagazineCard, Faq } from "@/lib/cms-types";
 import { ImageUpload } from "@/components/ImageUpload";
 import { HtmlUpload } from "@/components/HtmlUpload";
+
 
 const HTML_HINT = "העלה קובץ HTML סטטי מוכן (עם עיצוב פנימי). אם לא הועלה קובץ – הריבוע לא יהיה לחיץ באתר.";
 
