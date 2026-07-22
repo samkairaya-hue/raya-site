@@ -255,7 +255,7 @@ function AboutSection({ data }: { data: SiteData }) {
 function FaqSection({ data }: { data: SiteData }) {
   const [openId, setOpenId] = useState<string | null>(null);
   return (
-    <section style={{ background: "var(--bg-sand)", padding: "110px 0" }}>
+    <section className="section-padded-mobile" style={{ background: "var(--bg-sand)", padding: "110px 0" }}>
       <div className="container-x" style={{ maxWidth: 850 }}>
         <div className="section-header">
           <h2>{data.faq_header.title}</h2>
