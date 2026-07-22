@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_auth: {
+        Row: {
+          id: number
+          password_hash: string | null
+          updated_at: string
+        }
+        Insert: {
+          id?: number
+          password_hash?: string | null
+          updated_at?: string
+        }
+        Update: {
+          id?: number
+          password_hash?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       faqs: {
         Row: {
           answer: string

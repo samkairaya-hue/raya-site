@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireAdminSession } from "./admin-session.server";
 import type { Database } from "@/integrations/supabase/types";
 import type { SiteData } from "./cms-types";
 
@@ -11,6 +11,11 @@ function serverPublicClient() {
   return createClient<Database>(url, key, {
     auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
   });
+}
+
+async function admin() {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  return supabaseAdmin;
 }
 
 export const loadSite = createServerFn({ method: "GET" }).handler(async (): Promise<SiteData> => {
@@ -63,12 +68,13 @@ export const getCardBySlug = createServerFn({ method: "GET" })
 // ===== ADMIN =====
 
 export const saveContent = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireAdminSession])
   .inputValidator((d: { key: string; data: unknown }) =>
     z.object({ key: z.string().min(1), data: z.record(z.string(), z.any()) }).parse(d),
   )
-  .handler(async ({ data, context }) => {
-    const { error } = await context.supabase
+  .handler(async ({ data }) => {
+    const sb = await admin();
+    const { error } = await sb
       .from("site_content")
       .upsert({ key: data.key, data: data.data as any, updated_at: new Date().toISOString() });
     if (error) throw new Error(error.message);
@@ -88,7 +94,7 @@ const cardSchema = z.object({
 });
 
 export const saveCard = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireAdminSession])
   .inputValidator((d: { kind: "matrix" | "outcome" | "magazine"; card: any }) =>
     z
       .object({
@@ -97,26 +103,28 @@ export const saveCard = createServerFn({ method: "POST" })
       })
       .parse(d),
   )
-  .handler(async ({ data, context }) => {
+  .handler(async ({ data }) => {
     const table =
       data.kind === "matrix"
         ? "matrix_cards"
         : data.kind === "outcome"
           ? "outcome_cards"
           : "magazine_cards";
+    const sb = await admin();
     const payload: any = { ...data.card, updated_at: new Date().toISOString() };
-    const { error } = await context.supabase.from(table).upsert(payload);
+    const { error } = await sb.from(table).upsert(payload);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
 
 export const deleteCard = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireAdminSession])
   .inputValidator((d: { kind: "magazine"; id: string }) =>
     z.object({ kind: z.literal("magazine"), id: z.string().uuid() }).parse(d),
   )
-  .handler(async ({ data, context }) => {
-    const { error } = await context.supabase.from("magazine_cards").delete().eq("id", data.id);
+  .handler(async ({ data }) => {
+    const sb = await admin();
+    const { error } = await sb.from("magazine_cards").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
@@ -129,10 +137,11 @@ const faqSchema = z.object({
 });
 
 export const saveFaq = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireAdminSession])
   .inputValidator((d: any) => faqSchema.parse(d))
-  .handler(async ({ data, context }) => {
-    const { error } = await context.supabase
+  .handler(async ({ data }) => {
+    const sb = await admin();
+    const { error } = await sb
       .from("faqs")
       .upsert({ ...data, updated_at: new Date().toISOString() });
     if (error) throw new Error(error.message);
@@ -140,20 +149,22 @@ export const saveFaq = createServerFn({ method: "POST" })
   });
 
 export const deleteFaq = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireAdminSession])
   .inputValidator((d: { id: string }) => z.object({ id: z.string().uuid() }).parse(d))
-  .handler(async ({ data, context }) => {
-    const { error } = await context.supabase.from("faqs").delete().eq("id", data.id);
+  .handler(async ({ data }) => {
+    const sb = await admin();
+    const { error } = await sb.from("faqs").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
 
 export const reorderFaqs = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireAdminSession])
   .inputValidator((d: { ids: string[] }) => z.object({ ids: z.array(z.string().uuid()) }).parse(d))
-  .handler(async ({ data, context }) => {
+  .handler(async ({ data }) => {
+    const sb = await admin();
     for (let i = 0; i < data.ids.length; i++) {
-      await context.supabase
+      await sb
         .from("faqs")
         .update({ sort_order: i + 1, updated_at: new Date().toISOString() })
         .eq("id", data.ids[i]);
@@ -163,7 +174,7 @@ export const reorderFaqs = createServerFn({ method: "POST" })
 
 // Upload media (image) to private cms-media bucket and return a long-lived signed URL
 export const uploadMedia = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireAdminSession])
   .inputValidator((d: { filename: string; contentType: string; base64: string }) =>
     z
       .object({
@@ -173,16 +184,16 @@ export const uploadMedia = createServerFn({ method: "POST" })
       })
       .parse(d),
   )
-  .handler(async ({ data, context }) => {
+  .handler(async ({ data }) => {
+    const sb = await admin();
     const cleanName = data.filename.replace(/[^a-zA-Z0-9._-]/g, "_");
     const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${cleanName}`;
     const bytes = Uint8Array.from(atob(data.base64), (c) => c.charCodeAt(0));
-    const { error: upErr } = await context.supabase.storage
+    const { error: upErr } = await sb.storage
       .from("cms-media")
       .upload(path, bytes, { contentType: data.contentType, upsert: false });
     if (upErr) throw new Error(upErr.message);
-    // ~100 years
-    const { data: signed, error: sErr } = await context.supabase.storage
+    const { data: signed, error: sErr } = await sb.storage
       .from("cms-media")
       .createSignedUrl(path, 60 * 60 * 24 * 365 * 100);
     if (sErr || !signed) throw new Error(sErr?.message ?? "signed url failed");
@@ -224,12 +235,3 @@ export const sendContact = createServerFn({ method: "POST" })
     await new Promise((r) => setTimeout(r, 300));
     return { sent: true, mocked: true, to, subject };
   });
-
-
-function escapeHtml(s: string) {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}

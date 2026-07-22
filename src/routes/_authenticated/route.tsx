@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { checkAdminSession, adminLogin, adminLogout } from "@/lib/admin-auth.functions";
 
 export const Route = createFileRoute("/_authenticated")({
   component: Layout,
@@ -8,27 +9,70 @@ export const Route = createFileRoute("/_authenticated")({
 
 function Layout() {
   const nav = useNavigate();
-  const [email, setEmail] = useState<string | null>(null);
-  const [ready, setReady] = useState(false);
+  const check = useServerFn(checkAdminSession);
+  const login = useServerFn(adminLogin);
+  const logout = useServerFn(adminLogout);
+  const [status, setStatus] = useState<"loading" | "locked" | "unlocked">("loading");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    let cancelled = false;
-    supabase.auth.getUser().then(({ data }) => {
-      if (cancelled) return;
-      if (!data.user) {
-        nav({ to: "/auth" });
-        return;
-      }
-      setEmail(data.user.email || "");
-      setReady(true);
-    });
-    return () => { cancelled = true; };
-  }, [nav]);
+    check().then((r) => setStatus(r.authenticated ? "unlocked" : "locked"));
+  }, [check]);
 
-  if (!ready) {
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    setError("");
+    try {
+      const r = await login({ data: { password } });
+      if (r.ok) {
+        setPassword("");
+        setStatus("unlocked");
+      } else {
+        setError("סיסמה שגויה");
+      }
+    } catch (err: any) {
+      setError(err?.message || "שגיאה");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  if (status === "loading") {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: "#F8F9FA" }}>
         <div className="text-sm" style={{ color: "var(--text-muted)" }}>טוען…</div>
+      </div>
+    );
+  }
+
+  if (status === "locked") {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4" style={{ background: "var(--bg-cream)", direction: "rtl" }}>
+        <div className="w-full max-w-md p-10 card-surface">
+          <h1 className="text-2xl mb-2 text-center">כניסת מנהל</h1>
+          <p className="text-center mb-6 text-sm">הזן/י את סיסמת הניהול</p>
+          <form onSubmit={submit} className="flex flex-col gap-4">
+            <div className="field">
+              <label htmlFor="p">סיסמה</label>
+              <input
+                id="p"
+                type="password"
+                required
+                autoFocus
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                dir="ltr"
+              />
+            </div>
+            {error && <p className="text-sm" style={{ color: "var(--destructive)" }}>{error}</p>}
+            <button type="submit" className="cta" disabled={busy}>
+              {busy ? "…" : "כניסה"}
+            </button>
+          </form>
+        </div>
       </div>
     );
   }
@@ -38,10 +82,13 @@ function Layout() {
       <header className="flex items-center justify-between px-6 py-4 bg-white border-b" style={{ borderColor: "rgba(0,0,0,.08)" }}>
         <div className="font-bold" style={{ color: "var(--text-dark)" }}>CMS · ניהול תוכן</div>
         <div className="flex items-center gap-4 text-sm">
-          <span style={{ color: "var(--text-muted)" }}>{email}</span>
           <a href="/" className="font-bold" style={{ color: "var(--accent-primary)" }}>צפייה באתר</a>
           <button
-            onClick={async () => { await supabase.auth.signOut(); nav({ to: "/auth" }); }}
+            onClick={async () => {
+              await logout();
+              setStatus("locked");
+              nav({ to: "/admin" });
+            }}
             className="bg-transparent border-0 cursor-pointer text-sm"
             style={{ color: "var(--destructive)" }}
           >יציאה</button>
