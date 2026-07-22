@@ -196,7 +196,7 @@ function OutcomesSection({ data }: { data: SiteData }) {
 
 function MagazineSection({ data }: { data: SiteData }) {
   return (
-    <section style={{ background: "var(--bg-sand)", padding: "110px 0" }}>
+    <section className="section-padded-mobile" style={{ background: "var(--bg-sand)", padding: "110px 0" }}>
       <div className="container-x">
         <div className="section-header">
           <h2>{data.magazine_header.title}</h2>
