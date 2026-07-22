@@ -432,10 +432,9 @@ function MagCardRow({ card, isOpen, onToggle, onSaved, onRefresh, onDelete }: { 
           </Row>
           
           <hr />
-          <Row label="כותרת עמוד המאמר"><input value={c.target_title} onChange={(e) => setC({ ...c, target_title: e.target.value })} /></Row>
-          <Row label="תוכן המאמר"><textarea rows={8} value={c.target_body} onChange={(e) => setC({ ...c, target_body: e.target.value })} /></Row>
-          <Row label="תמונת המאמר">
-            <ImageUpload value={c.target_image_url} onChange={(url) => setC({ ...c, target_image_url: url })} hint={ARTICLE_RES} />
+          <p className="text-xs" style={{ color: "var(--text-muted)" }}>עמוד מאמר – קובץ HTML סטטי שיוצג לאחר לחיצה על הכרטיס</p>
+          <Row label="קובץ HTML של המאמר">
+            <HtmlUpload value={c.target_body} onChange={(html) => setC({ ...c, target_body: html })} hint={HTML_HINT} />
           </Row>
           <div className="flex gap-3">
             <button className="cta" type="submit">שמור</button>
