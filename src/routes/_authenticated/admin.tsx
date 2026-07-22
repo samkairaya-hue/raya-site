@@ -12,6 +12,9 @@ import {
 } from "@/lib/cms.functions";
 import type { SiteData, Card, MagazineCard, Faq } from "@/lib/cms-types";
 import { ImageUpload } from "@/components/ImageUpload";
+import { HtmlUpload } from "@/components/HtmlUpload";
+
+const HTML_HINT = "העלה קובץ HTML סטטי מוכן (עם עיצוב פנימי). אם לא הועלה קובץ – הריבוע לא יהיה לחיץ באתר.";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   component: Admin,
@@ -346,11 +349,9 @@ function CardRow({ kind, card, isOpen, onToggle, onSaved, onRefresh }: { kind: "
             <ImageUpload value={c.image_url} onChange={(url) => setC({ ...c, image_url: url })} hint={CARD_RES} />
           </Row>
           <hr />
-          <p className="text-xs" style={{ color: "var(--text-muted)" }}>עמוד יעד – מוצג לאחר לחיצה על הריבוע</p>
-          <Row label="כותרת עמוד היעד"><input value={c.target_title} onChange={(e) => setC({ ...c, target_title: e.target.value })} /></Row>
-          <Row label="תוכן עמוד היעד"><textarea rows={6} value={c.target_body} onChange={(e) => setC({ ...c, target_body: e.target.value })} /></Row>
-          <Row label="תמונת עמוד היעד">
-            <ImageUpload value={c.target_image_url} onChange={(url) => setC({ ...c, target_image_url: url })} hint={TARGET_RES} />
+          <p className="text-xs" style={{ color: "var(--text-muted)" }}>עמוד יעד – קובץ HTML סטטי שיוצג לאחר לחיצה על הריבוע</p>
+          <Row label="קובץ HTML של עמוד היעד">
+            <HtmlUpload value={c.target_body} onChange={(html) => setC({ ...c, target_body: html })} hint={HTML_HINT} />
           </Row>
           <button className="cta self-start" type="submit">שמור</button>
         </form>
@@ -365,7 +366,7 @@ function MagazinePanel({ cards, onSaved, onRefresh }: { cards: MagazineCard[]; o
   const [openId, setOpenId] = useState<string>("");
   return (
     <div className="flex flex-col gap-3">
-      <p className="text-xs" style={{ color: "var(--text-muted)" }}>אם "תוכן עמוד היעד" ריק – הכרטיס לא יהיה לחיץ.</p>
+      <p className="text-xs" style={{ color: "var(--text-muted)" }}>אם לא הועלה קובץ HTML לעמוד המאמר – הכרטיס לא יהיה לחיץ.</p>
       {cards.map((c) => (
         <MagCardRow
           key={c.id}
@@ -431,10 +432,9 @@ function MagCardRow({ card, isOpen, onToggle, onSaved, onRefresh, onDelete }: { 
           </Row>
           
           <hr />
-          <Row label="כותרת עמוד המאמר"><input value={c.target_title} onChange={(e) => setC({ ...c, target_title: e.target.value })} /></Row>
-          <Row label="תוכן המאמר"><textarea rows={8} value={c.target_body} onChange={(e) => setC({ ...c, target_body: e.target.value })} /></Row>
-          <Row label="תמונת המאמר">
-            <ImageUpload value={c.target_image_url} onChange={(url) => setC({ ...c, target_image_url: url })} hint={ARTICLE_RES} />
+          <p className="text-xs" style={{ color: "var(--text-muted)" }}>עמוד מאמר – קובץ HTML סטטי שיוצג לאחר לחיצה על הכרטיס</p>
+          <Row label="קובץ HTML של המאמר">
+            <HtmlUpload value={c.target_body} onChange={(html) => setC({ ...c, target_body: html })} hint={HTML_HINT} />
           </Row>
           <div className="flex gap-3">
             <button className="cta" type="submit">שמור</button>
