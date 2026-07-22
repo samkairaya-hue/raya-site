@@ -164,7 +164,7 @@ function BridgeSection({ data }: { data: SiteData }) {
 
 function OutcomesSection({ data }: { data: SiteData }) {
   return (
-    <section style={{ background: "var(--bg-cream)", padding: "110px 0" }}>
+    <section className="section-padded-mobile" style={{ background: "var(--bg-cream)", padding: "110px 0" }}>
       <div className="container-x">
         <div className="section-header">
           <h2>{data.outcomes_header.title}</h2>
