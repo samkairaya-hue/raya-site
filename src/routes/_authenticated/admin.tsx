@@ -349,11 +349,9 @@ function CardRow({ kind, card, isOpen, onToggle, onSaved, onRefresh }: { kind: "
             <ImageUpload value={c.image_url} onChange={(url) => setC({ ...c, image_url: url })} hint={CARD_RES} />
           </Row>
           <hr />
-          <p className="text-xs" style={{ color: "var(--text-muted)" }}>עמוד יעד – מוצג לאחר לחיצה על הריבוע</p>
-          <Row label="כותרת עמוד היעד"><input value={c.target_title} onChange={(e) => setC({ ...c, target_title: e.target.value })} /></Row>
-          <Row label="תוכן עמוד היעד"><textarea rows={6} value={c.target_body} onChange={(e) => setC({ ...c, target_body: e.target.value })} /></Row>
-          <Row label="תמונת עמוד היעד">
-            <ImageUpload value={c.target_image_url} onChange={(url) => setC({ ...c, target_image_url: url })} hint={TARGET_RES} />
+          <p className="text-xs" style={{ color: "var(--text-muted)" }}>עמוד יעד – קובץ HTML סטטי שיוצג לאחר לחיצה על הריבוע</p>
+          <Row label="קובץ HTML של עמוד היעד">
+            <HtmlUpload value={c.target_body} onChange={(html) => setC({ ...c, target_body: html })} hint={HTML_HINT} />
           </Row>
           <button className="cta self-start" type="submit">שמור</button>
         </form>
