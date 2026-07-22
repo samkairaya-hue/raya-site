@@ -543,3 +543,50 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
     </div>
   );
 }
+
+function PasswordPanel({ onSaved }: { onSaved: (m: string) => void }) {
+  const change = useServerFn(changeAdminPassword);
+  const [current, setCurrent] = useState("");
+  const [next, setNext] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    if (next.length < 6) { setError("סיסמה חדשה חייבת להכיל לפחות 6 תווים"); return; }
+    if (next !== confirm) { setError("אימות הסיסמה אינו תואם"); return; }
+    setBusy(true);
+    try {
+      const r = await change({ data: { current, next } });
+      if (!r.ok) { setError(r.error || "שגיאה"); return; }
+      setCurrent(""); setNext(""); setConfirm("");
+      onSaved("הסיסמה עודכנה");
+    } catch (err: any) {
+      setError(err?.message || "שגיאה");
+    } finally { setBusy(false); }
+  }
+
+  return (
+    <form className="flex flex-col gap-3" onSubmit={submit}>
+      <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+        עדכון סיסמת הכניסה למערכת הניהול. הסיסמה הראשונית: <b>123456</b>.
+      </p>
+      <div className="field">
+        <label>סיסמה נוכחית</label>
+        <input type="password" required value={current} onChange={(e) => setCurrent(e.target.value)} dir="ltr" />
+      </div>
+      <div className="field">
+        <label>סיסמה חדשה (לפחות 6 תווים)</label>
+        <input type="password" required minLength={6} value={next} onChange={(e) => setNext(e.target.value)} dir="ltr" />
+      </div>
+      <div className="field">
+        <label>אימות סיסמה חדשה</label>
+        <input type="password" required minLength={6} value={confirm} onChange={(e) => setConfirm(e.target.value)} dir="ltr" />
+      </div>
+      {error && <p className="text-sm" style={{ color: "var(--destructive)" }}>{error}</p>}
+      <button className="cta self-start" type="submit" disabled={busy}>{busy ? "…" : "עדכן סיסמה"}</button>
+    </form>
+  );
+}
