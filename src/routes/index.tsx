@@ -387,7 +387,7 @@ function Footer({ data }: { data: SiteData }) {
   const navigate = useNavigate();
   return (
     <footer style={{ background: "var(--footer-bg)", color: "#94A3B8", padding: "48px 24px", textAlign: "center", fontSize: ".9rem" }}>
-      <div className="container-x flex items-center justify-between flex-wrap gap-4">
+      <div className="container-x footer-mobile flex items-center justify-between flex-wrap gap-4">
         <div className="font-bold" style={{ color: "#fff" }}>{data.footer.right}</div>
         <div>{data.footer.center}</div>
         <button
