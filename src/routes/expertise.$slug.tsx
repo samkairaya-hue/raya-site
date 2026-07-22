@@ -26,26 +26,51 @@ export const Route = createFileRoute("/expertise/$slug")({
 });
 
 function Page() {
-  const { card } = Route.useLoaderData() as { site: SiteData; card: any };
-  return <HtmlPageFrame html={card.target_body} />;
+  const { site, card } = Route.useLoaderData() as { site: SiteData; card: any };
+  return (
+    <HtmlPageFrame
+      html={card.target_body}
+      siteTitle={site.settings.site_title || "רעיה ברכה | EMID"}
+      ctaText={site.hero.button_text}
+    />
+  );
 }
 
-export function HtmlPageFrame({ html }: { html: string }) {
+export function HtmlPageFrame({
+  html,
+  siteTitle,
+  ctaText,
+}: {
+  html: string;
+  siteTitle: string;
+  ctaText: string;
+}) {
   return (
     <div style={{ position: "fixed", inset: 0, display: "flex", flexDirection: "column", background: "#fff" }}>
-      <div
+      <header
         style={{
           padding: "10px 20px",
           borderBottom: "1px solid rgba(0,0,0,.08)",
           background: "#fff",
           direction: "rtl",
           fontFamily: "Assistant, system-ui, sans-serif",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
         }}
       >
+        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          <span style={{ color: "var(--text-dark)", fontWeight: 800, fontSize: "1.25rem" }}>
+            {siteTitle}
+          </span>
+          <a href="/#contact" className="cta" style={{ padding: "10px 22px", fontSize: "0.95rem", borderRadius: "9999px" }}>
+            {ctaText}
+          </a>
+        </div>
         <Link to="/" style={{ color: "#DC5A5A", fontWeight: 700, textDecoration: "none" }}>
           → חזרה לדף הבית
         </Link>
-      </div>
+      </header>
       <iframe
         title="content"
         srcDoc={html}

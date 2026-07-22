@@ -1,0 +1,1 @@
+UPDATE public.site_content SET data = data || '{"site_title":"רעיה ברכה | EMID"}' WHERE key = 'settings' AND data->>'site_title' IS NULL;

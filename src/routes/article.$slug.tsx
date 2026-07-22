@@ -25,6 +25,12 @@ export const Route = createFileRoute("/article/$slug")({
 });
 
 function Page() {
-  const { card } = Route.useLoaderData() as { site: SiteData; card: any };
-  return <HtmlPageFrame html={card.target_body} />;
+  const { site, card } = Route.useLoaderData() as { site: SiteData; card: any };
+  return (
+    <HtmlPageFrame
+      html={card.target_body}
+      siteTitle={site.settings.site_title || "רעיה ברכה | EMID"}
+      ctaText={site.hero.button_text}
+    />
+  );
 }

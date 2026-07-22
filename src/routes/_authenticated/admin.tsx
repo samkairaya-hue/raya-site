@@ -260,6 +260,7 @@ function SettingsPanel({ site, onSaved, onRefresh }: { site: SiteData; onSaved: 
   return (
     <JsonPanel site={site} k="settings" fields={[
       ["admin_email", "מייל מנהל (כתובת יעד לטופס)"],
+      ["site_title", "כותרת מותג (מופיעה בכותרת עמודי המשנה)"],
       ["submit_button_text", "טקסט כפתור שליחה"],
       ["submit_success_text", "טקסט כפתור לאחר שליחה מוצלחת"],
     ]} onSaved={onSaved} onRefresh={onRefresh} />
