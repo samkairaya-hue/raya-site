@@ -388,7 +388,7 @@ function MagazinePanel({ cards, onSaved, onRefresh }: { cards: MagazineCard[]; o
 }
 
 
-function MagCardRow({ card, isOpen, onToggle, onSaved, onRefresh, onDelete }: { card: MagazineCard; isOpen: boolean; onToggle: () => void; onSaved: (m: string) => void; onRefresh: () => void; onDelete: () => void }) {
+function MagCardRow({ card, isOpen, onToggle, onSaved, onRefresh }: { card: MagazineCard; isOpen: boolean; onToggle: () => void; onSaved: (m: string) => void; onRefresh: () => void }) {
   const [c, setC] = useState<MagazineCard>(card);
   const save = useServerFn(saveCard);
   return (
@@ -418,13 +418,13 @@ function MagCardRow({ card, isOpen, onToggle, onSaved, onRefresh, onDelete }: { 
           </Row>
           <div className="flex gap-3">
             <button className="cta" type="submit">שמור</button>
-            <button className="cta" style={{ background: "var(--destructive)" }} type="button" onClick={onDelete}>מחק</button>
           </div>
         </form>
       )}
     </div>
   );
 }
+
 
 function FaqPanel({ faqs, onSaved, onRefresh }: { faqs: Faq[]; onSaved: (m: string) => void; onRefresh: () => void }) {
   const save = useServerFn(saveFaq);
