@@ -72,10 +72,10 @@ function Hero({ data }: { data: SiteData }) {
 function EmidSection({ data }: { data: SiteData }) {
   const e = data.emid;
   return (
-    <section style={{ background: "var(--bg-sand)", padding: "110px 0" }}>
-      <div className="container-x grid gap-16 items-center" style={{ gridTemplateColumns: "1.1fr 0.9fr" }}>
+    <section className="section-padded-mobile" style={{ background: "var(--bg-sand)", padding: "110px 0" }}>
+      <div className="container-x responsive-2col grid gap-16 items-center" style={{ gridTemplateColumns: "1.1fr 0.9fr" }}>
         <div>
-          <h2 className="mb-5" style={{ fontSize: "2.3rem" }}>{e.title}</h2>
+          <h2 className="mb-5 section-title-mobile" style={{ fontSize: "2.3rem" }}>{e.title}</h2>
           <ExpandableText text={e.body} lines={8} className="text-lg leading-8" />
         </div>
         <div className="flex justify-center">
@@ -83,7 +83,7 @@ function EmidSection({ data }: { data: SiteData }) {
             <img
               src={e.image_url}
               alt=""
-              className="w-full"
+              className="w-full responsive-img"
               style={{ maxWidth: 380, height: 420, objectFit: "cover", borderRadius: 24, boxShadow: "0 12px 36px rgba(30,41,59,.08)" }}
             />
           ) : (
