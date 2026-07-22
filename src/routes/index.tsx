@@ -39,24 +39,24 @@ function scrollToContact(e: React.MouseEvent) {
 function Hero({ data }: { data: SiteData }) {
   const h = data.hero;
   return (
-    <section style={{ background: "var(--bg-cream)", padding: "120px 0 90px" }}>
-      <div className="container-x grid gap-16 items-center" style={{ gridTemplateColumns: "1.2fr 0.8fr" }}>
+    <section className="hero-section-mobile" style={{ background: "var(--bg-cream)", padding: "120px 0 90px" }}>
+      <div className="container-x responsive-2col grid gap-16 items-center" style={{ gridTemplateColumns: "1.2fr 0.8fr" }}>
         <div>
           <div className="font-bold mb-3" style={{ color: "var(--accent-primary)", fontSize: "1.1rem" }}>
             {h.subtitle}
           </div>
-          <h1 className="mb-4" style={{ fontSize: "3rem", lineHeight: 1.2 }}>{h.title}</h1>
-          <h2 className="mb-7" style={{ color: "var(--text-muted)", fontSize: "1.3rem", fontWeight: 600, lineHeight: 1.6 }}>
+          <h1 className="mb-4 hero-h1-mobile" style={{ fontSize: "3rem", lineHeight: 1.2 }}>{h.title}</h1>
+          <h2 className="mb-7 hero-h2-mobile" style={{ color: "var(--text-muted)", fontSize: "1.3rem", fontWeight: 600, lineHeight: 1.6 }}>
             {h.subheading}
           </h2>
-          <p style={{ fontSize: "1.15rem", lineHeight: 1.8 }}>{h.body}</p>
+          <p className="hero-body-mobile" style={{ fontSize: "1.15rem", lineHeight: 1.8 }}>{h.body}</p>
         </div>
-        <div className="flex justify-center">
+        <div className="flex justify-center hero-image-order">
           {h.image_url && (
             <img
               src={h.image_url}
               alt=""
-              className="w-full"
+              className="w-full responsive-img"
               style={{ maxWidth: 380, height: 480, objectFit: "cover", borderRadius: 16, boxShadow: "0 20px 40px rgba(30,41,59,.08)" }}
             />
           )}
@@ -72,10 +72,10 @@ function Hero({ data }: { data: SiteData }) {
 function EmidSection({ data }: { data: SiteData }) {
   const e = data.emid;
   return (
-    <section style={{ background: "var(--bg-sand)", padding: "110px 0" }}>
-      <div className="container-x grid gap-16 items-center" style={{ gridTemplateColumns: "1.1fr 0.9fr" }}>
+    <section className="section-padded-mobile" style={{ background: "var(--bg-sand)", padding: "110px 0" }}>
+      <div className="container-x responsive-2col grid gap-16 items-center" style={{ gridTemplateColumns: "1.1fr 0.9fr" }}>
         <div>
-          <h2 className="mb-5" style={{ fontSize: "2.3rem" }}>{e.title}</h2>
+          <h2 className="mb-5 section-title-mobile" style={{ fontSize: "2.3rem" }}>{e.title}</h2>
           <ExpandableText text={e.body} lines={8} className="text-lg leading-8" />
         </div>
         <div className="flex justify-center">
@@ -83,7 +83,7 @@ function EmidSection({ data }: { data: SiteData }) {
             <img
               src={e.image_url}
               alt=""
-              className="w-full"
+              className="w-full responsive-img"
               style={{ maxWidth: 380, height: 420, objectFit: "cover", borderRadius: 24, boxShadow: "0 12px 36px rgba(30,41,59,.08)" }}
             />
           ) : (
@@ -116,7 +116,7 @@ const matrixIcons = [
 
 function MatrixSection({ data }: { data: SiteData }) {
   return (
-    <section style={{ background: "var(--bg-cream)", padding: "110px 0" }}>
+    <section className="section-padded-mobile" style={{ background: "var(--bg-cream)", padding: "110px 0" }}>
       <div className="container-x">
         <div className="section-header">
           <h2>{data.matrix_header.title}</h2>
@@ -151,10 +151,10 @@ function MatrixSection({ data }: { data: SiteData }) {
 function BridgeSection({ data }: { data: SiteData }) {
   const b = data.bridge;
   return (
-    <section style={{ background: "var(--bg-sand)", padding: "100px 0" }}>
+    <section className="section-padded-mobile" style={{ background: "var(--bg-sand)", padding: "100px 0" }}>
       <div className="container-x">
-        <div className="mx-auto text-center" style={{ maxWidth: 900, padding: "56px 48px", background: "#fff", borderRadius: 24, border: "1px solid rgba(224,122,95,.2)", boxShadow: "0 10px 30px rgba(30,41,59,.02)" }}>
-          <h2 className="mb-6" style={{ color: "var(--accent-primary)", fontSize: "2.2rem" }}>{b.title}</h2>
+        <div className="mx-auto text-center bridge-box-mobile" style={{ maxWidth: 900, padding: "56px 48px", background: "#fff", borderRadius: 24, border: "1px solid rgba(224,122,95,.2)", boxShadow: "0 10px 30px rgba(30,41,59,.02)" }}>
+          <h2 className="mb-6 section-title-mobile" style={{ color: "var(--accent-primary)", fontSize: "2.2rem" }}>{b.title}</h2>
           <ExpandableText text={b.body} lines={6} className="text-lg" />
         </div>
       </div>
@@ -164,7 +164,7 @@ function BridgeSection({ data }: { data: SiteData }) {
 
 function OutcomesSection({ data }: { data: SiteData }) {
   return (
-    <section style={{ background: "var(--bg-cream)", padding: "110px 0" }}>
+    <section className="section-padded-mobile" style={{ background: "var(--bg-cream)", padding: "110px 0" }}>
       <div className="container-x">
         <div className="section-header">
           <h2>{data.outcomes_header.title}</h2>
@@ -196,7 +196,7 @@ function OutcomesSection({ data }: { data: SiteData }) {
 
 function MagazineSection({ data }: { data: SiteData }) {
   return (
-    <section style={{ background: "var(--bg-sand)", padding: "110px 0" }}>
+    <section className="section-padded-mobile" style={{ background: "var(--bg-sand)", padding: "110px 0" }}>
       <div className="container-x">
         <div className="section-header">
           <h2>{data.magazine_header.title}</h2>
@@ -233,17 +233,17 @@ function MagazineSection({ data }: { data: SiteData }) {
 function AboutSection({ data }: { data: SiteData }) {
   const a = data.about;
   return (
-    <section style={{ background: "var(--bg-cream)", padding: "110px 0" }}>
-      <div className="container-x grid gap-16 items-center" style={{ gridTemplateColumns: "0.8fr 1.2fr" }}>
+    <section className="section-padded-mobile" style={{ background: "var(--bg-cream)", padding: "110px 0" }}>
+      <div className="container-x responsive-2col grid gap-16 items-center" style={{ gridTemplateColumns: "0.8fr 1.2fr" }}>
         <div className="flex justify-center">
           {a.image_url && (
-            <img src={a.image_url} alt="" className="w-full" style={{ maxWidth: 380, height: 480, objectFit: "cover", borderRadius: 16, boxShadow: "0 20px 40px rgba(30,41,59,.06)" }} />
+            <img src={a.image_url} alt="" className="w-full responsive-img" style={{ maxWidth: 380, height: 480, objectFit: "cover", borderRadius: 16, boxShadow: "0 20px 40px rgba(30,41,59,.06)" }} />
           )}
         </div>
         <div>
-          <h2 className="mb-5" style={{ fontSize: "2.3rem" }}>{a.title}</h2>
+          <h2 className="mb-5 section-title-mobile" style={{ fontSize: "2.3rem" }}>{a.title}</h2>
           <ExpandableText text={a.body} lines={6} className="text-lg leading-8" />
-          <div className="mt-6 font-bold pr-4" style={{ color: "var(--text-dark)", borderRight: "3px solid var(--accent-primary)" }}>
+          <div className="mt-6 font-bold pr-4 about-credentials-mobile" style={{ color: "var(--text-dark)", borderRight: "3px solid var(--accent-primary)" }}>
             {a.credentials}
           </div>
         </div>
@@ -255,7 +255,7 @@ function AboutSection({ data }: { data: SiteData }) {
 function FaqSection({ data }: { data: SiteData }) {
   const [openId, setOpenId] = useState<string | null>(null);
   return (
-    <section style={{ background: "var(--bg-sand)", padding: "110px 0" }}>
+    <section className="section-padded-mobile" style={{ background: "var(--bg-sand)", padding: "110px 0" }}>
       <div className="container-x" style={{ maxWidth: 850 }}>
         <div className="section-header">
           <h2>{data.faq_header.title}</h2>
@@ -345,16 +345,16 @@ function ContactSection({ data }: { data: SiteData }) {
     s.submit_button_text;
 
   return (
-    <section id="contact" style={{ background: "var(--bg-cream)", padding: "100px 0" }}>
+    <section id="contact" className="section-padded-mobile" style={{ background: "var(--bg-cream)", padding: "100px 0" }}>
       <div className="container-x" style={{ maxWidth: 650 }}>
         <div className="section-header">
-          <h2 style={{ fontSize: "2.2rem" }}>{c.title}</h2>
+          <h2 className="section-title-mobile" style={{ fontSize: "2.2rem" }}>{c.title}</h2>
           <p>{c.subtitle}</p>
         </div>
         <form
           ref={formRef}
           onSubmit={onSubmit}
-          className="flex flex-col gap-5"
+          className="flex flex-col gap-5 contact-form-mobile"
           style={{ background: "#fff", padding: "48px 40px", borderRadius: 24, border: "1px solid rgba(226,232,240,.6)", boxShadow: "0 10px 40px rgba(30,41,59,.02)" }}
         >
           <div className="field">
@@ -387,7 +387,7 @@ function Footer({ data }: { data: SiteData }) {
   const navigate = useNavigate();
   return (
     <footer style={{ background: "var(--footer-bg)", color: "#94A3B8", padding: "48px 24px", textAlign: "center", fontSize: ".9rem" }}>
-      <div className="container-x flex items-center justify-between flex-wrap gap-4">
+      <div className="container-x footer-mobile flex items-center justify-between flex-wrap gap-4">
         <div className="font-bold" style={{ color: "#fff" }}>{data.footer.right}</div>
         <div>{data.footer.center}</div>
         <button
