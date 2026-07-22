@@ -369,8 +369,6 @@ function CardRow({ kind, card, isOpen, onToggle, onSaved, onRefresh }: { kind: "
 }
 
 function MagazinePanel({ cards, onSaved, onRefresh }: { cards: MagazineCard[]; onSaved: (m: string) => void; onRefresh: () => void }) {
-  const save = useServerFn(saveCard);
-  const del = useServerFn(deleteCard);
   const [openId, setOpenId] = useState<string>("");
   return (
     <div className="flex flex-col gap-3">
@@ -383,38 +381,12 @@ function MagazinePanel({ cards, onSaved, onRefresh }: { cards: MagazineCard[]; o
           onToggle={() => setOpenId((cur) => (cur === c.id ? "" : c.id))}
           onSaved={onSaved}
           onRefresh={onRefresh}
-          onDelete={async () => {
-            if (confirm("למחוק?")) { await del({ data: { kind: "magazine", id: c.id } }); onRefresh(); }
-          }}
         />
       ))}
-      <button
-        className="cta self-start"
-        style={{ background: "var(--text-dark)" }}
-        onClick={async () => {
-          const nextOrder = cards.length + 1;
-          await save({
-            data: {
-              kind: "magazine",
-              card: {
-                sort_order: nextOrder,
-                slug: "new-" + Date.now(),
-                title: "",
-                description: "",
-                image_url: "",
-                target_title: "",
-                target_body: "",
-                target_image_url: "",
-                tag: "",
-              },
-            },
-          });
-          onRefresh();
-        }}
-      >+ הוסף כרטיס מגזין</button>
     </div>
   );
 }
+
 
 function MagCardRow({ card, isOpen, onToggle, onSaved, onRefresh, onDelete }: { card: MagazineCard; isOpen: boolean; onToggle: () => void; onSaved: (m: string) => void; onRefresh: () => void; onDelete: () => void }) {
   const [c, setC] = useState<MagazineCard>(card);
