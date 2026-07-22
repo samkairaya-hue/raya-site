@@ -233,17 +233,17 @@ function MagazineSection({ data }: { data: SiteData }) {
 function AboutSection({ data }: { data: SiteData }) {
   const a = data.about;
   return (
-    <section style={{ background: "var(--bg-cream)", padding: "110px 0" }}>
-      <div className="container-x grid gap-16 items-center" style={{ gridTemplateColumns: "0.8fr 1.2fr" }}>
+    <section className="section-padded-mobile" style={{ background: "var(--bg-cream)", padding: "110px 0" }}>
+      <div className="container-x responsive-2col grid gap-16 items-center" style={{ gridTemplateColumns: "0.8fr 1.2fr" }}>
         <div className="flex justify-center">
           {a.image_url && (
-            <img src={a.image_url} alt="" className="w-full" style={{ maxWidth: 380, height: 480, objectFit: "cover", borderRadius: 16, boxShadow: "0 20px 40px rgba(30,41,59,.06)" }} />
+            <img src={a.image_url} alt="" className="w-full responsive-img" style={{ maxWidth: 380, height: 480, objectFit: "cover", borderRadius: 16, boxShadow: "0 20px 40px rgba(30,41,59,.06)" }} />
           )}
         </div>
         <div>
-          <h2 className="mb-5" style={{ fontSize: "2.3rem" }}>{a.title}</h2>
+          <h2 className="mb-5 section-title-mobile" style={{ fontSize: "2.3rem" }}>{a.title}</h2>
           <ExpandableText text={a.body} lines={6} className="text-lg leading-8" />
-          <div className="mt-6 font-bold pr-4" style={{ color: "var(--text-dark)", borderRight: "3px solid var(--accent-primary)" }}>
+          <div className="mt-6 font-bold pr-4 about-credentials-mobile" style={{ color: "var(--text-dark)", borderRight: "3px solid var(--accent-primary)" }}>
             {a.credentials}
           </div>
         </div>
