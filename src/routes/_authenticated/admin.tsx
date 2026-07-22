@@ -570,9 +570,6 @@ function PasswordPanel({ onSaved }: { onSaved: (m: string) => void }) {
 
   return (
     <form className="flex flex-col gap-3" onSubmit={submit}>
-      <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-        עדכון סיסמת הכניסה למערכת הניהול. הסיסמה הראשונית: <b>123456</b>.
-      </p>
       <div className="field">
         <label>סיסמה נוכחית</label>
         <input type="password" required value={current} onChange={(e) => setCurrent(e.target.value)} dir="ltr" />
