@@ -151,10 +151,10 @@ function MatrixSection({ data }: { data: SiteData }) {
 function BridgeSection({ data }: { data: SiteData }) {
   const b = data.bridge;
   return (
-    <section style={{ background: "var(--bg-sand)", padding: "100px 0" }}>
+    <section className="section-padded-mobile" style={{ background: "var(--bg-sand)", padding: "100px 0" }}>
       <div className="container-x">
-        <div className="mx-auto text-center" style={{ maxWidth: 900, padding: "56px 48px", background: "#fff", borderRadius: 24, border: "1px solid rgba(224,122,95,.2)", boxShadow: "0 10px 30px rgba(30,41,59,.02)" }}>
-          <h2 className="mb-6" style={{ color: "var(--accent-primary)", fontSize: "2.2rem" }}>{b.title}</h2>
+        <div className="mx-auto text-center bridge-box-mobile" style={{ maxWidth: 900, padding: "56px 48px", background: "#fff", borderRadius: 24, border: "1px solid rgba(224,122,95,.2)", boxShadow: "0 10px 30px rgba(30,41,59,.02)" }}>
+          <h2 className="mb-6 section-title-mobile" style={{ color: "var(--accent-primary)", fontSize: "2.2rem" }}>{b.title}</h2>
           <ExpandableText text={b.body} lines={6} className="text-lg" />
         </div>
       </div>
