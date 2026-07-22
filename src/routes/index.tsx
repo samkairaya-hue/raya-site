@@ -122,16 +122,16 @@ function MatrixSection({ data }: { data: SiteData }) {
           <h2>{data.matrix_header.title}</h2>
           <p>{data.matrix_header.subtitle}</p>
         </div>
-        <div className="grid gap-6" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))" }}>
+        <div className="grid gap-6 mini-card-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))" }}>
           {data.matrix.map((c, i) => {
             const clickable = !!c.target_body?.trim();
             const inner = (
-              <div className="card-surface h-full" style={{ padding: "36px 28px" }}>
-                <div className="mb-5 flex items-center justify-center" style={{ width: 52, height: 52, borderRadius: 14, background: "color-mix(in oklab, var(--accent-primary) 12%, transparent)", color: "var(--accent-primary)" }}>
+              <div className="card-surface h-full mini-card" style={{ padding: "36px 28px" }}>
+                <div className="mb-5 flex items-center justify-center mini-card-icon" style={{ width: 52, height: 52, borderRadius: 14, background: "color-mix(in oklab, var(--accent-primary) 12%, transparent)", color: "var(--accent-primary)" }}>
                   {matrixIcons[i % matrixIcons.length]}
                 </div>
-                <h3 className="mb-3" style={{ fontSize: "1.2rem" }}>{c.title}</h3>
-                <p style={{ fontSize: ".98rem", lineHeight: 1.7 }}>{c.description}</p>
+                <h3 className="mb-3 mini-card-title" style={{ fontSize: "1.2rem" }}>{c.title}</h3>
+                <p className="mini-card-desc" style={{ fontSize: ".98rem", lineHeight: 1.7 }}>{c.description}</p>
               </div>
             );
             return clickable ? (
