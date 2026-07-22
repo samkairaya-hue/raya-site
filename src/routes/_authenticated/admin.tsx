@@ -366,7 +366,7 @@ function MagazinePanel({ cards, onSaved, onRefresh }: { cards: MagazineCard[]; o
   const [openId, setOpenId] = useState<string>("");
   return (
     <div className="flex flex-col gap-3">
-      <p className="text-xs" style={{ color: "var(--text-muted)" }}>אם "תוכן עמוד היעד" ריק – הכרטיס לא יהיה לחיץ.</p>
+      <p className="text-xs" style={{ color: "var(--text-muted)" }}>אם לא הועלה קובץ HTML לעמוד המאמר – הכרטיס לא יהיה לחיץ.</p>
       {cards.map((c) => (
         <MagCardRow
           key={c.id}
