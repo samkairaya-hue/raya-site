@@ -345,16 +345,16 @@ function ContactSection({ data }: { data: SiteData }) {
     s.submit_button_text;
 
   return (
-    <section id="contact" style={{ background: "var(--bg-cream)", padding: "100px 0" }}>
+    <section id="contact" className="section-padded-mobile" style={{ background: "var(--bg-cream)", padding: "100px 0" }}>
       <div className="container-x" style={{ maxWidth: 650 }}>
         <div className="section-header">
-          <h2 style={{ fontSize: "2.2rem" }}>{c.title}</h2>
+          <h2 className="section-title-mobile" style={{ fontSize: "2.2rem" }}>{c.title}</h2>
           <p>{c.subtitle}</p>
         </div>
         <form
           ref={formRef}
           onSubmit={onSubmit}
-          className="flex flex-col gap-5"
+          className="flex flex-col gap-5 contact-form-mobile"
           style={{ background: "#fff", padding: "48px 40px", borderRadius: 24, border: "1px solid rgba(226,232,240,.6)", boxShadow: "0 10px 40px rgba(30,41,59,.02)" }}
         >
           <div className="field">
