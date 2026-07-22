@@ -39,24 +39,24 @@ function scrollToContact(e: React.MouseEvent) {
 function Hero({ data }: { data: SiteData }) {
   const h = data.hero;
   return (
-    <section style={{ background: "var(--bg-cream)", padding: "120px 0 90px" }}>
-      <div className="container-x grid gap-16 items-center" style={{ gridTemplateColumns: "1.2fr 0.8fr" }}>
+    <section className="hero-section-mobile" style={{ background: "var(--bg-cream)", padding: "120px 0 90px" }}>
+      <div className="container-x responsive-2col grid gap-16 items-center" style={{ gridTemplateColumns: "1.2fr 0.8fr" }}>
         <div>
           <div className="font-bold mb-3" style={{ color: "var(--accent-primary)", fontSize: "1.1rem" }}>
             {h.subtitle}
           </div>
-          <h1 className="mb-4" style={{ fontSize: "3rem", lineHeight: 1.2 }}>{h.title}</h1>
-          <h2 className="mb-7" style={{ color: "var(--text-muted)", fontSize: "1.3rem", fontWeight: 600, lineHeight: 1.6 }}>
+          <h1 className="mb-4 hero-h1-mobile" style={{ fontSize: "3rem", lineHeight: 1.2 }}>{h.title}</h1>
+          <h2 className="mb-7 hero-h2-mobile" style={{ color: "var(--text-muted)", fontSize: "1.3rem", fontWeight: 600, lineHeight: 1.6 }}>
             {h.subheading}
           </h2>
-          <p style={{ fontSize: "1.15rem", lineHeight: 1.8 }}>{h.body}</p>
+          <p className="hero-body-mobile" style={{ fontSize: "1.15rem", lineHeight: 1.8 }}>{h.body}</p>
         </div>
-        <div className="flex justify-center">
+        <div className="flex justify-center hero-image-order">
           {h.image_url && (
             <img
               src={h.image_url}
               alt=""
-              className="w-full"
+              className="w-full responsive-img"
               style={{ maxWidth: 380, height: 480, objectFit: "cover", borderRadius: 16, boxShadow: "0 20px 40px rgba(30,41,59,.08)" }}
             />
           )}
