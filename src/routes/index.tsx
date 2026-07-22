@@ -391,12 +391,13 @@ function Footer({ data }: { data: SiteData }) {
         <div className="font-bold" style={{ color: "#fff" }}>{data.footer.right}</div>
         <div>{data.footer.center}</div>
         <button
-          onClick={() => navigate({ to: "/auth" })}
+          onClick={() => navigate({ to: "/admin" })}
           className="text-xs opacity-60 hover:opacity-100 bg-transparent border-0 cursor-pointer"
           style={{ color: "#94A3B8" }}
         >
           ניהול
         </button>
+
       </div>
     </footer>
   );
