@@ -12,4 +12,9 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  // Deploy target. Unset => Lovable's default (cloudflare-module).
+  // On Vercel set the env var NITRO_PRESET=vercel. See DEPLOYMENT.md.
+  ...(process.env.NITRO_PRESET
+    ? { nitro: { preset: process.env.NITRO_PRESET } }
+    : {}),
 });
