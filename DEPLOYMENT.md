@@ -143,3 +143,14 @@ your sending domain with the provider.
 - [ ] uploading HTML to a card in sections 3/5/6 makes that card clickable
 - [ ] FAQ add/remove/reorder persists after a refresh
 - [ ] contact form shows the green success state and resets after 3s
+
+## Applying the schema without the Supabase CLI
+
+If `supabase db push` fails (e.g. "IPv6 is not supported on your current network"),
+open your Supabase project → SQL Editor and paste the contents of
+`supabase/full_setup.sql` (all migrations concatenated, in order) and run it once.
+This creates every table, RLS policy, GRANT, function and the default Hebrew content.
+
+Note: the database password is only used by the Supabase CLI / direct psql
+connections. It is NOT a Vercel environment variable — the app authenticates with
+`SUPABASE_URL` + the publishable/service-role keys over HTTPS.
